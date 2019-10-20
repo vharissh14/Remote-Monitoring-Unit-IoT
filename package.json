@@ -1,0 +1,29 @@
+{
+  "name": "Remote Monitoring Unit - IoT",
+  "version": "1.0.0",
+  "description": "To monitor pump in real time.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "IoT",
+    "Pump",
+    "Web Application",
+    "Real time"
+  ],
+  "author": "Sree Harissh V",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "express-handlebars": "^3.1.0",
+    "jsonwebtoken": "^8.5.0",
+    "mongoose": "^5.4.16",
+    "mongoose-unique-validator": "^2.0.2",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0"
+  }
+}
