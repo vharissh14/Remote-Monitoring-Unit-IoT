@@ -65,7 +65,7 @@ router.post('/login', (req, res) => {
                 }, config.secret, {
                     expiresIn: 604800 // for 1 week time in milliseconds
                 });
-                return res.json({
+                res.render('Admin/AdminHome', {
                     success: true,
                     token: "JWT " + token
                 });
@@ -77,6 +77,11 @@ router.post('/login', (req, res) => {
             }
         });
     });
+});
+
+router.get('/logout', (req, res) => {
+    req.logout();
+    res.render('AdminLogin');
 });
 
 /**
