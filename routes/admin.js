@@ -9,7 +9,7 @@ router.get('/login', (req, res) => {
     res.render('AdminLogin');
 });
 
-router.get('/logout', (req, res) => {
+router.get('/logout', isAuthenticated, (req, res) => {
     req.logout();
     res.redirect('/admin/login');
 });
@@ -80,7 +80,7 @@ passport.deserializeUser(function (id, done) {
 });
 
 function isAuthenticated(req, res, next) {
-  if (req.isAuthenticated())
+  if (req.isAuthenticated() && req.user.job_profile=="admin")
       return next();
 
   res.redirect('/');
