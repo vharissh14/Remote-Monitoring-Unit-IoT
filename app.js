@@ -5,6 +5,8 @@ const cors = require('cors');
 const passport = require('passport');
 const exphbs = require('express-handlebars');
 const path = require('path');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 
 // Bring in the database object
 const config = require('./config/database');
@@ -37,6 +39,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 // BodyParser Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(session({
+    secret: 'keyboard cat',
+    store: new MongoStore({
+        url: 'mongodb://localhost/test-app',
+        touchAfter: 24 * 3600 // time period in seconds
+    }),
+    saveUninitialized: true,
+    resave: true,
+    cookie: {  httpOnly: true,  secure: true  }
+}));
+
+
 // Passport Middleware
 app.use(passport.initialize());
 app.use(passport.session());
@@ -47,16 +62,6 @@ app.set("view engine", "handlebars");
 app.get('/', (req, res) => {
     res.redirect('/user/login');
 });
-
-// Create a custom middleware function
-const checkUserType = function (req, res, next) {
-    const userType = req.originalUrl.split('/')[2];
-    // Bring in the passport authentication starategy
-    require('./config/passport')(userType, passport);
-    next();
-};
-
-app.use(checkUserType);
 
 // Bring in the user routes
 const users = require('./routes/users');

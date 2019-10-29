@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const passport = require('passport');
+const passport = require('passport') , LocalStrategy = require('passport-local').Strategy;
 const jwt = require('jsonwebtoken');
 const Admin = require('../models/Admin');
 const config = require('../config/database');
@@ -36,65 +36,67 @@ router.post('/register', (req, res) => {
     });
 });
 
-router.post('/login', (req, res) => {
-    const username = req.body.username;
-    const password = req.body.password;
-
+passport.use(new LocalStrategy(
+  function(username, password, done) {
+    console.log("in here");
     Admin.getAdminByUsername(username, (err, admin) => {
         if (err) throw err;
         if (!admin) {
-            return res.json({
-                success: false,
-                message: "Admin not found."
-            });
+            return done(null, false, {message: "Admin Account Does Not Exit."})
         }
 
         Admin.comparePassword(password, admin.password, (err, isMatch) => {
             if (err) throw err;
             if (isMatch) {
-                const token = jwt.sign({
-                    type: "admin",
-                    data: {
-                        _id: admin._id,
-                        username: admin.username,
-                        name: admin.name,
-                        email: admin.email,
-                        contact: admin.contact,
-                        job_profile: admin.job_profile
-                    }
-                }, config.secret, {
-                    expiresIn: 604800 // for 1 week time in milliseconds
-                });
-                res.render('Admin/AdminHome', {
-                    success: true,
-                    token: "JWT " + token
-                });
+                console.log("heree");
+                return done(null, admin);
             } else {
-                return res.json({
-                    success: true,
-                    message: "Wrong Password."
-                });
+                return done(null, false, {message: "Invalid Password."});
             }
         });
     });
+  }
+));
+
+passport.serializeUser(function (user, done) {
+	done(null, user.id);
+});
+
+passport.deserializeUser(function (id, done) {
+	Admin.getAdminById(id, function (err, user) {
+		done(err, user);
+	});
+});
+
+router.post('/login', passport.authenticate('local'), (req, res) => {
+    res.redirect('/admin/profile');
 });
 
 router.get('/logout', (req, res) => {
     req.logout();
-    res.render('AdminLogin');
+    res.redirect('/admin/login');
 });
 
 /**
  * Get Authenticated user profile
  */
 
-router.get('/profile', passport.authenticate('jwt', {
-    session: false
-}), (req, res) => {
+router.get('/profile', isAuthenticated, (req, res) => {
     // console.log(req.user);
-    return res.json(
-        req.user
-    );
+    res.render('Admin/AdminHome');
 });
+
+function isAuthenticated(req, res, next) {
+  // do any checks you want to in here
+  console.log(req.isAuthenticated());
+  // CHECK THE USER STORED IN SESSION FOR A CUSTOM VARIABLE
+  // you can do this however you want with whatever variables you set up
+  if (req.isAuthenticated())
+      return next();
+
+  // IF A USER ISN'T LOGGED IN, THEN REDIRECT THEM SOMEWHERE
+  res.redirect('/');
+}
+
 
 module.exports = router;
