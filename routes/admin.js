@@ -9,6 +9,15 @@ router.get('/login', (req, res) => {
     res.render('AdminLogin');
 });
 
+router.get('/logout', (req, res) => {
+    req.logout();
+    res.redirect('/admin/login');
+});
+
+router.get('/home', isAuthenticated, (req, res) => {
+    res.render('Admin/AdminHome');
+});
+
 router.post('/register', (req, res) => {
     let newAdmin = new Admin({
         name: req.body.name,
@@ -36,9 +45,12 @@ router.post('/register', (req, res) => {
     });
 });
 
+router.post('/login', passport.authenticate('local'), (req, res) => {
+    res.redirect('/admin/home');
+});
+
 passport.use(new LocalStrategy(
   function(username, password, done) {
-    console.log("in here");
     Admin.getAdminByUsername(username, (err, admin) => {
         if (err) throw err;
         if (!admin) {
@@ -48,7 +60,6 @@ passport.use(new LocalStrategy(
         Admin.comparePassword(password, admin.password, (err, isMatch) => {
             if (err) throw err;
             if (isMatch) {
-                console.log("heree");
                 return done(null, admin);
             } else {
                 return done(null, false, {message: "Invalid Password."});
@@ -68,33 +79,10 @@ passport.deserializeUser(function (id, done) {
 	});
 });
 
-router.post('/login', passport.authenticate('local'), (req, res) => {
-    res.redirect('/admin/profile');
-});
-
-router.get('/logout', (req, res) => {
-    req.logout();
-    res.redirect('/admin/login');
-});
-
-/**
- * Get Authenticated user profile
- */
-
-router.get('/profile', isAuthenticated, (req, res) => {
-    // console.log(req.user);
-    res.render('Admin/AdminHome');
-});
-
 function isAuthenticated(req, res, next) {
-  // do any checks you want to in here
-  console.log(req.isAuthenticated());
-  // CHECK THE USER STORED IN SESSION FOR A CUSTOM VARIABLE
-  // you can do this however you want with whatever variables you set up
   if (req.isAuthenticated())
       return next();
 
-  // IF A USER ISN'T LOGGED IN, THEN REDIRECT THEM SOMEWHERE
   res.redirect('/');
 }
 
