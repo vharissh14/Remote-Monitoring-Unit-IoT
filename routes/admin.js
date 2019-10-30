@@ -10,17 +10,29 @@ router.get('/login', (req, res) => {
     res.render('AdminLogin', {loginType: "Admin", layoutPartial: "admin"});
 });
 
-router.get('/dashboard', (req, res) => {
+router.get('/dashboard', isAuthenticated, (req, res) => {
   res.render('Admin/AdminDashboard', {page: "dashboard", username: req.user.username})
 });
 
-router.get('/addUser', (req, res) => {
+router.get('/addUser', isAuthenticated, (req, res) => {
   res.render('Admin/AdminAddUser', {page: "addUser", username: req.user.username})
 });
 
 router.get('/logout', isAuthenticated, (req, res) => {
     req.logout();
     res.redirect('/admin/login');
+});
+
+router.get('/listUser', isAuthenticated, (req, res) => {
+    User.getAllUser((err, data) => {
+        return res.json(data);
+    });
+});
+
+router.get('/manageUser', isAuthenticated, (req, res) => {
+    User.getAllUser((err, data) => {
+        res.render('Admin/AdminManageUser', {page: "manageUser", username: req.user.username, data: data})
+    });
 });
 
 router.get('*', isAuthenticated, (req, res) => {
