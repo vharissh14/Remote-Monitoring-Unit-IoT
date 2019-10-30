@@ -6,7 +6,7 @@ const User = require('../models/User');
 const config = require('../config/database');
 
 router.get('/login', (req, res) => {
-    res.render('UserLogin');
+    res.render('UserLogin', {loginType: "User"});
 });
 
 router.post('/register', (req, res) => {

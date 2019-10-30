@@ -6,7 +6,7 @@ const Admin = require('../models/Admin');
 const config = require('../config/database');
 
 router.get('/login', (req, res) => {
-    res.render('AdminLogin');
+    res.render('AdminLogin', {loginType: "Admin"});
 });
 
 router.get('/logout', isAuthenticated, (req, res) => {
