@@ -3,6 +3,7 @@ const router = express.Router();
 const passport = require('passport') , LocalStrategy = require('passport-local').Strategy;
 const jwt = require('jsonwebtoken');
 const Admin = require('../models/Admin');
+const User = require('../models/User');
 const config = require('../config/database');
 
 router.get('/login', (req, res) => {
@@ -11,6 +12,10 @@ router.get('/login', (req, res) => {
 
 router.get('/dashboard', (req, res) => {
   res.render('Admin/AdminDashboard', {page: "dashboard", username: req.user.username})
+});
+
+router.get('/addUser', (req, res) => {
+  res.render('Admin/AdminAddUser', {page: "addUser", username: req.user.username})
 });
 
 router.get('/logout', isAuthenticated, (req, res) => {
@@ -25,6 +30,30 @@ router.get('*', isAuthenticated, (req, res) => {
 // router.get('/home', isAuthenticated, (req, res) => {
 //     res.render('Admin/AdminHome', {page: "home", username: req.user.username});
 // });
+
+router.post('/userRegister', (req, res) => {
+    let newUser = new User({
+        name: req.body.name,
+        username: req.body.username,
+        email: req.body.email,
+        contact: req.body.contact,
+        password: req.body.password
+    });
+    User.addUser(newUser, (err, user) => {
+        if (err) {
+            let message = "";
+            if (err.errors.username) message = "Username is already taken. ";
+            if (err.errors.email) message += "Email already exists.";
+            return res.json({
+                success: false,
+                message: "User registration Failed."
+            });
+        } else {
+            res.render('Admin/AdminAddUser', {page: "addUser", username: req.user.username, message: "User Added"})
+        }
+    });
+});
+
 
 router.post('/register', (req, res) => {
     let newAdmin = new Admin({
