@@ -15,7 +15,7 @@ router.get('/logout', isAuthenticated, (req, res) => {
 });
 
 router.get('/home', isAuthenticated, (req, res) => {
-    res.render('Admin/AdminHome');
+    res.render('Admin/AdminHome', {username: req.user.username});
 });
 
 router.post('/register', (req, res) => {
