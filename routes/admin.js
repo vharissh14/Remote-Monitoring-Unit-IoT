@@ -6,7 +6,11 @@ const Admin = require('../models/Admin');
 const config = require('../config/database');
 
 router.get('/login', (req, res) => {
-    res.render('AdminLogin', {loginType: "Admin"});
+    res.render('AdminLogin', {loginType: "Admin", layoutPartial: "admin"});
+});
+
+router.get('/dashboard', (req, res) => {
+  res.render('Admin/AdminDashboard', {page: "dashboard", username: req.user.username})
 });
 
 router.get('/logout', isAuthenticated, (req, res) => {
@@ -14,9 +18,13 @@ router.get('/logout', isAuthenticated, (req, res) => {
     res.redirect('/admin/login');
 });
 
-router.get('/home', isAuthenticated, (req, res) => {
-    res.render('Admin/AdminHome', {username: req.user.username});
+router.get('*', isAuthenticated, (req, res) => {
+    res.redirect('/admin/dashboard');
 });
+
+// router.get('/home', isAuthenticated, (req, res) => {
+//     res.render('Admin/AdminHome', {page: "home", username: req.user.username});
+// });
 
 router.post('/register', (req, res) => {
     let newAdmin = new Admin({
@@ -46,7 +54,7 @@ router.post('/register', (req, res) => {
 });
 
 router.post('/login', passport.authenticate('local'), (req, res) => {
-    res.redirect('/admin/home');
+    res.redirect('/admin/dashboard');
 });
 
 passport.use(new LocalStrategy(

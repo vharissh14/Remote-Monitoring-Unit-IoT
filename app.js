@@ -56,7 +56,9 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.engine('handlebars', exphbs());
+app.engine('handlebars', exphbs({
+  partialsDir: __dirname + "/views/Partials/"
+}));
 app.set("view engine", "handlebars");
 
 app.get('/', (req, res) => {
