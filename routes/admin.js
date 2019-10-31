@@ -46,7 +46,6 @@ router.get('*', isAuthenticated, (req, res) => {
 router.post('/userRegister', (req, res) => {
     let newUser = new User({
         name: req.body.name,
-        username: req.body.username,
         email: req.body.email,
         contact: req.body.contact,
         password: req.body.password

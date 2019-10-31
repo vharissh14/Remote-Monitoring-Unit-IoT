@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const uniqueValidator = require('mongoose-unique-validator');
-
+const autoIncrement = require('mongoose-auto-increment');
+autoIncrement.initialize(mongoose.connection);
 // User Schema
 const UserSchema = mongoose.Schema({
     name: {
@@ -15,7 +16,7 @@ const UserSchema = mongoose.Schema({
         required: true
     },
     username: {
-        type: String,
+        type: Number,
         unique: true,
         required: true
     },
@@ -30,6 +31,10 @@ const UserSchema = mongoose.Schema({
 });
 
 UserSchema.plugin(uniqueValidator);
+UserSchema.plugin(autoIncrement.plugin, { model: "User", field: 'username',
+    startAt: 100000,
+    incrementBy: 1
+});
 
 const User = module.exports = mongoose.model('User', UserSchema);
 
