@@ -1,55 +1,71 @@
 <div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Name</th>
+            <th>EMail</th>
+            <th>Mobile</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tfoot>
+          <tr>
+            <th>Username</th>
+            <th>Name</th>
+            <th>EMail</th>
+            <th>Mobile</th>
+            <th></th>
+          </tr>
+        </tfoot>
+        <tbody>
+          {{#each data}}
+          <tr>
+            <td>{{this.username}}</td>
+            <td>{{this.name}}</td>
+            <td>{{this.email}}</td>
+            <td>{{this.contact}}</td>
+            <td>
+              <a href="#edit" class="btn btn-primary btn-icon-split" data-toggle="modal" data-book-id="123" data-target="#myModal">
+                <span class="icon text-white-50">
+                  <i class="fas fa-edit"></i>
+                </span>
+                <span class="text">EDIT</span>
+              </a>
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
     </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Name</th>
-                        <th>EMail</th>
-                        <th>Mobile</th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <th>Username</th>
-                        <th>Name</th>
-                        <th>EMail</th>
-                        <th>Mobile</th>
-                    </tr>
-                </tfoot>
-                <tbody>
-                    {{#each data}}
-                    <tr>
-                        <td>{{this.username}}</td>
-                        <td>{{this.name}}</td>
-                        <td>{{this.email}}</td>
-                        <td>{{this.contact}}</td>
-                    </tr>
-                    {{/each}}
-                </tbody>
-            </table>
-        </div>
-    </div>
+  </div>
 </div>
 
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal" id="myModal">
     <div class="modal-dialog">
       <div class="modal-content">
+
+        <!-- Modal Header -->
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">Modal title</h4>
+          <h4 class="modal-title">Edit User</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
+
+        <!-- Modal body -->
         <div class="modal-body">
-          ...
+          <p id="mypid"></p>
         </div>
+
+        <!-- Modal footer -->
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
         </div>
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
+
+      </div>
+    </div>
+  </div>
