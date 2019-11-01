@@ -70,6 +70,18 @@ router.post('/addUser', (req, res) => {
     });
 });
 
+router.post('/getUserDetails', (req, res) => {
+    User.getUserById(req.body.id, function(err, user){
+        if(err) {
+            return res.json({status: 400, message: "Data not in DB."});
+        }
+        else{
+            return res.json({
+                user: user
+            })
+        }
+    });
+});
 
 router.post('/register', (req, res) => {
     let newAdmin = new Admin({
