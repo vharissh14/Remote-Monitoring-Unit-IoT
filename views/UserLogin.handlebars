@@ -1,3 +1,10 @@
+<style media="screen">
+label {
+    display:block;
+    margin-left:140px;
+    margin-top:0px;
+}
+</style>
 <!-- <body class="bg-gradient-primary">
 
 <div class="container">
@@ -69,7 +76,8 @@ can
     </div>
     <div class="row">
         <div class="col-sm-2">
-
+            <canvas id="foo"></canvas>
+            <label>41%</label>
         </div>
         <div class="col-sm-2">
 
@@ -147,7 +155,6 @@ can
 
         </div>
     </div>
-    <canvas id="foo"></canvas>
 </body>
 <script src="/socket.io/socket.io.js"></script>
 <script src="https://bernii.github.io/gauge.js/dist/gauge.min.js" charset="utf-8"></script>
@@ -178,14 +185,14 @@ var opts = {
     strokeColor: '#E0E0E0',  // to see which ones work best for you
     generateGradient: true,
     highDpiSupport: true,     // High resolution support
-
+    label: function(val) {return Math.round(val);}
 };
 var target = document.getElementById('foo'); // your canvas element
 var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
 gauge.maxValue = 4000; // set max gauge value
 gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
 gauge.animationSpeed = 32; // set animation speed (32 is default value)
-gauge.set(0);
+gauge.set(10);
 </script>
 
 
