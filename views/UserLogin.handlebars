@@ -251,7 +251,6 @@ function drawChart() {
     misc_html_element.volt.draw(misc_chart.volt, misc_options.volt);
     misc_html_element.current.draw(misc_chart.current, misc_options.current);
     misc_html_element.power.draw(misc_chart.power, misc_options.power);
-
     socket.on('news', function (data) {
         console.log(data);
         document.getElementById('rmuno').innerText = data['rmuno'];
