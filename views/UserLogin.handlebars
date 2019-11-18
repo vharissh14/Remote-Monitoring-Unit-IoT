@@ -1,9 +1,16 @@
 <style media="screen">
 label {
-    display:block;
-    margin-left:140px;
-    margin-top:0px;
+  display:block;
+  margin-left:100px;
+  margin-top:0px;
 }
+.row{
+  margin-bottom: 10px;
+}
+/*
+.col-sm-2 {
+margin: 10px;
+} */
 </style>
 <!-- <body class="bg-gradient-primary">
 
@@ -54,147 +61,198 @@ can
 
 </div> -->
 <body>
+  <section class="h-100">
+    <header class="container h-100">
+      <div class="d-flex align-items-center justify-content-center h-100">
+        <div class="d-flex flex-column">
+          <h1 class="text align-self-center p-2" style="color: #f04545">Metrics</h1>
+        </div>
+      </div>
+    </header>
+  </section>
+  <h3><u>DEVICE DETAILS</u></h3>
+  <div style="border:2px solid black; border-radius: 15px;">
     <div class="row">
-        <div class="col-sm-2">
-            <h3>RMU SR NO: </h3> <h4 id="rmuno"></h4>
-        </div>
-        <div class="col-sm-2">
-            <h3>Modem SR NO: </h3> <h4 id="modemno"></h4>
-        </div>
-        <div class="col-sm-2">
-            <h3>Modem IP: </h3> <h4 id="modemip"></h4>
-        </div>
-        <div class="col-sm-2">
-            <h3>Telephone NO: </h3> <h4 id="tele"></h4>
-        </div>
-        <div class="col-sm-2">
-            <h3>Reading Date: </h3> <h4 id="readdate"></h4>
-        </div>
-        <div class="col-sm-2">
-            <h3>RMU RTC: </h3> <h4 id="rtcdate"></h4>
-        </div>
+      <div class="col-sm-4">
+        <h4>RMU SR NO: </h4> <h4 id="rmuno">N/A</h4>
+      </div>
+      <div class="col-sm-4">
+        <h4>Modem SR NO: </h4> <h4 id="modemno">N/A</h4>
+      </div>
+      <div class="col-sm-4">
+        <h4>Modem IP: </h4> <h4 id="modemip">N/A</h4>
+      </div>
     </div>
     <div class="row">
-        <div class="col-sm-2">
-            <canvas id="foo"></canvas>
-            <label>41%</label>
-        </div>
-        <div class="col-sm-2">
-
-        </div>
-        <div class="col-sm-2">
-
-        </div>
-        <div class="col-sm-2">
-
-        </div>
-        <div class="col-sm-2">
-
-        </div>
-        <div class="col-sm-2">
-
-        </div>
+      <div class="col-sm-4">
+        <h4>Telephone NO: </h4> <h4 id="tele">N/A</h4>
+      </div>
+      <div class="col-sm-4">
+        <h4>Reading Date: </h4> <h4 id="readdate">N/A</h4>
+      </div>
+      <div class="col-sm-4">
+        <h4>RMU RTC: </h4> <h4 id="rtcdate">N/A</h4>
+      </div>
     </div>
-    <div class="row">
-        <div class="col-sm-2">
+  </div>
+<br>
+  <h3><u>MOTOR DETAILS</u></h3>
+  <div class="row">
+    <div class="col-sm-2">
+      <div id="motor_volt_div">
 
-        </div>
-        <div class="col-sm-2">
-
-        </div>
-        <div class="col-sm-2">
-
-        </div>
-        <div class="col-sm-2">
-
-        </div>
-        <div class="col-sm-2">
-
-        </div>
-        <div class="col-sm-2">
-
-        </div>
+      </div>
     </div>
-    <div class="row">
-        <div class="col-sm-2">
+    <div class="col-sm-2">
+      <div id="motor_current_div">
 
-        </div>
-        <div class="col-sm-2">
-
-        </div>
-        <div class="col-sm-2">
-
-        </div>
-        <div class="col-sm-2">
-
-        </div>
-        <div class="col-sm-2">
-
-        </div>
-        <div class="col-sm-2">
-
-        </div>
+      </div>
     </div>
-    <div class="row">
-        <div class="col-sm-2">
+    <div class="col-sm-2">
+      <div id="motor_power_div">
 
-        </div>
-        <div class="col-sm-2">
-
-        </div>
-        <div class="col-sm-2">
-
-        </div>
-        <div class="col-sm-2">
-
-        </div>
-        <div class="col-sm-2">
-
-        </div>
-        <div class="col-sm-2">
-
-        </div>
+      </div>
     </div>
+    <div class="col-sm-2">
+      <div id="motor_freq_div">
+
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div id="motor_rpm_div">
+
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div id="motor_power_div">
+
+      </div>
+    </div>
+  </div>
+  <br>
+  <h3><u>TODAY DISCHARGE AND ENERGY</u></h3>
+  <div class="row">
+    <div class="col-sm-6">
+      <div id="motor_today_discharge">
+
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <h4>Today Energy: </h4> <h4 id="today_energy">N/A</h4>
+    </div>
+  </div>
+  <div class="row">
+
+  </div>
 </body>
 <script src="/socket.io/socket.io.js"></script>
-<script src="https://bernii.github.io/gauge.js/dist/gauge.min.js" charset="utf-8"></script>
-<script>
+<!-- <script>
 var socket = io.connect('http://localhost:5000/');
 socket.on('news', function (data) {
+  document.getElementById('rmuno').innerText = data['rmuno'];
+  document.getElementById('modemno').innerText = data['modemno'];
+  document.getElementById('modemip').innerText = data['modemip'];
+  document.getElementById('tele').innerText = data['tele'];
+  document.getElementById('readdate').innerText = data['readdate'];
+  document.getElementById('rtcdate').innerText = data['rtcdate'];
+});
+</script> -->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+google.charts.load('current', {'packages':['gauge']});
+google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+  var socket = io.connect('http://localhost:5000/');
+  var motor_chart = {
+    volt: google.visualization.arrayToDataTable([['Label', 'Value'],['Volt (V)', 0]]),
+    current: google.visualization.arrayToDataTable([['Label', 'Value'],['Current (A)', 0]]),
+    power: google.visualization.arrayToDataTable([['Label', 'Value'],['Power (KW)', 0]]),
+    freq: google.visualization.arrayToDataTable([['Label', 'Value'],['Freq (Hz)', 0]]),
+    rpm: google.visualization.arrayToDataTable([['Label', 'Value'],['RPM x 1000', 0]])
+  }
+
+  var motor_options = {
+    volt: {width: 200, height: 200, min:0, max: 500, majorTicks: ['0', '100', '200', '300', '400', '500']},
+    current: {width: 200, height: 200, min:0, max: 20, majorTicks: ['0', '5', '10', '15', '20']},
+    power: {width: 200, height: 200, min:0, max: 20, majorTicks: ['0', '5', '10', '15', '20']},
+    freq: {width: 200, height: 200, min:0, max: 300, majorTicks: ['0', '100', '200', '300']},
+    rpm: {width: 200, height: 200, min:0, max: 10000, majorTicks: ['0', '2', '4', '6', '8', '10']}
+  }
+
+  var motor_html_element = {
+    volt: new google.visualization.Gauge(document.getElementById('motor_volt_div')),
+    current: new google.visualization.Gauge(document.getElementById('motor_current_div')),
+    power: new google.visualization.Gauge(document.getElementById('motor_power_div')),
+    freq: new google.visualization.Gauge(document.getElementById('motor_freq_div')),
+    rpm: new google.visualization.Gauge(document.getElementById('motor_rpm_div'))
+  };
+
+  motor_html_element.volt.draw(motor_chart.volt, motor_options.volt);
+  motor_html_element.current.draw(motor_chart.current, motor_options.current);
+  motor_html_element.power.draw(motor_chart.power, motor_options.power);
+  motor_html_element.freq.draw(motor_chart.freq, motor_options.freq);
+  motor_html_element.rpm.draw(motor_chart.rpm, motor_options.rpm);
+
+
+  var misc_chart = {
+    discharge: google.visualization.arrayToDataTable([['Label', 'Value'],['Discharge (LPM)', 0]]),
+    energy: google.visualization.arrayToDataTable([['Label', 'Value'],['Energy (KWH)', 0]]),
+    volt: google.visualization.arrayToDataTable([['Label', 'Value'],['Volt (V)', 0]]),
+    current: google.visualization.arrayToDataTable([['Label', 'Value'],['Current (A)', 0]]),
+    power: google.visualization.arrayToDataTable([['Label', 'Value'],['Power (KW)', 0]])
+  }
+
+  var misc_options = {
+    discharge: {width: 200, height: 200, min:0, max: 1000, majorTicks: ['0', '200', '400', '600', '800', '1000']},
+    energy: {width: 200, height: 200, min:0, max: 10, majorTicks: ['0', '2', '4', '6', '8', '10']},
+    volt: {width: 200, height: 200, min:0, max: 1000, majorTicks: ['0', '200', '400', '600', '800', '1000']},
+    current: {width: 200, height: 200, min:0, max: 20, majorTicks: ['0', '5', '10', '15', '20']},
+    power: {width: 200, height: 200, min:0, max: 20, majorTicks: ['0', '5', '10', '15', '20']}
+  }
+
+  var misc_html_element = {
+    discharge: new google.visualization.Gauge(document.getElementById('motor_today_discharge')),
+    energy: new google.visualization.Gauge(document.getElementById('motor_current_div')),
+    volt: new google.visualization.Gauge(document.getElementById('motor_power_div')),
+    current: new google.visualization.Gauge(document.getElementById('motor_freq_div')),
+    power: new google.visualization.Gauge(document.getElementById('motor_rpm_div'))
+  };
+
+  misc_html_element.discharge.draw(misc_chart.discharge, misc_options.discharge);
+
+  socket.on('news', function (data) {
     document.getElementById('rmuno').innerText = data['rmuno'];
     document.getElementById('modemno').innerText = data['modemno'];
     document.getElementById('modemip').innerText = data['modemip'];
     document.getElementById('tele').innerText = data['tele'];
     document.getElementById('readdate').innerText = data['readdate'];
     document.getElementById('rtcdate').innerText = data['rtcdate'];
-});
-
-var opts = {
-    angle: 0.15, // The span of the gauge arc
-    lineWidth: 0.44, // The line thickness
-    radiusScale: 1, // Relative radius
-    pointer: {
-        length: 0.6, // // Relative to gauge radius
-        strokeWidth: 0.035, // The thickness
-        color: '#000000' // Fill color
-    },
-    limitMax: false,     // If false, max value increases automatically if value > maxValue
-    limitMin: false,     // If true, the min value of the gauge will be fixed
-    colorStart: '#6FADCF',   // Colors
-    colorStop: '#8FC0DA',    // just experiment with them
-    strokeColor: '#E0E0E0',  // to see which ones work best for you
-    generateGradient: true,
-    highDpiSupport: true,     // High resolution support
-    label: function(val) {return Math.round(val);}
-};
-var target = document.getElementById('foo'); // your canvas element
-var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
-gauge.maxValue = 4000; // set max gauge value
-gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
-gauge.animationSpeed = 32; // set animation speed (32 is default value)
-gauge.set(10);
+    motor_chart.volt.setValue(0, 1, '100');
+    motor_chart.current.setValue(0, 1, '10');
+    motor_chart.power.setValue(0, 1, '15');
+    motor_chart.freq.setValue(0, 1, '200');
+    motor_chart.rpm.setValue(0, 1, '6000');
+    motor_html_element.volt.draw(motor_chart.volt, motor_options.volt);
+    motor_html_element.current.draw(motor_chart.current, motor_options.current);
+    motor_html_element.power.draw(motor_chart.power, motor_options.power);
+    motor_html_element.freq.draw(motor_chart.freq, motor_options.freq);
+    motor_html_element.rpm.draw(motor_chart.rpm, motor_options.rpm);
+  });
+  // setInterval(function() {
+  //   data.setValue(0, 1, 40 + Math.round(60 * Math.random()));
+  //   chart.draw(data, options);
+  // }, 13000);
+  // setInterval(function() {
+  //   data.setValue(1, 1, 40 + Math.round(60 * Math.random()));
+  //   chart.draw(data, options);
+  // }, 5000);
+  // setInterval(function() {
+  //   data.setValue(2, 1, 500);
+  //   chart.draw(data, options);
+  // }, 26000);
+}
 </script>
-
 
 <!-- Bootstrap core JavaScript-->
 <script src="../vendor/jquery/jquery.min.js"></script>
