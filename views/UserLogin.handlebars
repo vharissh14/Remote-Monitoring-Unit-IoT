@@ -204,7 +204,7 @@ function drawChart() {
     var motor_options = {
         volt: {width: width1, height: height1, min:0, max: 500, majorTicks: ['0', '100', '200', '300', '400', '500']},
         current: {width: width1, height: height1, min:0, max: 20, majorTicks: ['0', '5', '10', '15', '20']},
-        power: {width: width1, height: height1, min:0, max: 20, majorTicks: ['0', '5', '10', '15', '20']},
+        power: {width: width1, height: height1, min:0, max: 20000, majorTicks: ['0', '5', '10', '15', '20']},
         freq: {width: width1, height: height1, min:0, max: 300, majorTicks: ['0', '100', '200', '300']},
         rpm: {width: width1, height: height1, min:0, max: 10000, majorTicks: ['0', '2', '4', '6', '8', '10']}
     }
@@ -237,7 +237,7 @@ function drawChart() {
         energy: {width: width1, height: height1, min:0, max: 10, majorTicks: ['0', '2', '4', '6', '8', '10']},
         volt: {width: width1, height: height1, min:0, max: 1000, majorTicks: ['0', '200', '400', '600', '800', '1000']},
         current: {width: width1, height: height1, min:0, max: 20, majorTicks: ['0', '5', '10', '15', '20']},
-        power: {width: width1, height: height1, min:0, max: 20, majorTicks: ['0', '5', '10', '15', '20']}
+        power: {width: width1, height: height1, min:0, max: 20000, majorTicks: ['0', '5', '10', '15', '20']}
     }
 
     var misc_html_element = {
@@ -253,22 +253,38 @@ function drawChart() {
     misc_html_element.power.draw(misc_chart.power, misc_options.power);
 
     socket.on('news', function (data) {
+        console.log(data);
         document.getElementById('rmuno').innerText = data['rmuno'];
         document.getElementById('modemno').innerText = data['modemno'];
         document.getElementById('modemip').innerText = data['modemip'];
         document.getElementById('tele').innerText = data['tele'];
         document.getElementById('readdate').innerText = data['readdate'];
         document.getElementById('rtcdate').innerText = data['rtcdate'];
-        motor_chart.volt.setValue(0, 1, '100');
-        motor_chart.current.setValue(0, 1, '10');
-        motor_chart.power.setValue(0, 1, '15');
-        motor_chart.freq.setValue(0, 1, '200');
-        motor_chart.rpm.setValue(0, 1, '6000');
+        motor_chart.volt.setValue(0, 1, data['mvol']);
+        motor_chart.current.setValue(0, 1, data['mcur']);
+        motor_chart.power.setValue(0, 1, data['mpow']);
+        motor_chart.freq.setValue(0, 1, data['mfreq']);
+        motor_chart.rpm.setValue(0, 1, data['mrpm']);
+        misc_chart.volt.setValue(0, 1, data['pvol']);
+        misc_chart.current.setValue(0, 1, data['pcurr']);
+        misc_chart.power.setValue(0, 1, data['ppow']);
+
         motor_html_element.volt.draw(motor_chart.volt, motor_options.volt);
         motor_html_element.current.draw(motor_chart.current, motor_options.current);
         motor_html_element.power.draw(motor_chart.power, motor_options.power);
         motor_html_element.freq.draw(motor_chart.freq, motor_options.freq);
         motor_html_element.rpm.draw(motor_chart.rpm, motor_options.rpm);
+
+        misc_html_element.volt.draw(misc_chart.volt, misc_options.volt);
+        misc_html_element.current.draw(misc_chart.current, misc_options.current);
+        misc_html_element.power.draw(misc_chart.power, misc_options.power);
+
+        document.getElementById('up').innerText = data['up'];
+        document.getElementById('off').innerText = data['off'];
+        document.getElementById('status').innerText = data['status'];
+        document.getElementById('lat').innerText = data['lat'];
+        document.getElementById('lon').innerText = data['lng'];
+        document.getElementById('sim').innerText = data['imei'];
     });
     // setInterval(function() {
     //   data.setValue(0, 1, 40 + Math.round(60 * Math.random()));

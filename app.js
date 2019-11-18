@@ -84,13 +84,38 @@ server.listen(9000, ()=>{
     console.log("TCP Server on Port 9000")
 });
 
-
 function onClientConnected(sock) {
     sock.setEncoding("utf8");
+
     io.on('connection', function (socket) {
         sock.on('data', function(data) {
-            console.log(data);
-            socket.emit('news', { rmuno: '1234', modemno: '3234', modemip: '192.168.1.12', tele:'+919500099225', readdate: '17-11-2019', rtcdate: '17-11-2019' });
+            let iotdata = data.split('#');
+            let rmuno = iotdata[0];
+            let modemno = iotdata[1];
+            let modemip = iotdata[2];
+            let tele = iotdata[3];
+            let readdate = iotdata[4];
+            let rtcdate = iotdata[5];
+            let mvol = iotdata[6];
+            let mcur = iotdata[7];
+            let mpow = iotdata[8];
+            let mfreq = iotdata[9];
+            let mrpm = iotdata[10];
+            let up = iotdata[15];
+            let off = iotdata[16];
+            let status = iotdata[17];
+            let lat = iotdata[18];
+            let lng = iotdata[19];
+            let pvol = iotdata[20];
+            let pcurr = iotdata[21];
+            let ppow = iotdata[22];
+            let imei = iotdata[23];
+            socket.emit('news',
+            { rmuno: rmuno, modemno: modemno, modemip: modemip, tele: tele,
+                readdate: readdate, rtcdate: rtcdate, mvol: mvol, mcur: mcur, mpow: mpow,
+                mfreq: mfreq, mrpm: mrpm, up: up, off: off, status: status, lat: lat, lng: lng,
+                pvol: pvol, pcurr: pcurr, ppow: ppow, imei: imei
+            });
         });
     });
 
