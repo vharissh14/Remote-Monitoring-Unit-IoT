@@ -5,7 +5,7 @@ label {
     margin-top:0px;
 }
 .row{
-    margin-bottom: 6px;
+    margin-bottom: 3px;
 }
 #hid{
     color: black;
@@ -13,6 +13,7 @@ label {
 #hcol {
     color: #1CC8A7;
 }
+
 /*
 .col-sm-2 {
 margin: 10px;
@@ -66,19 +67,20 @@ can
 </div>
 
 </div> -->
-<body>
-    <section class="h-100">
-        <header class="container h-100">
-            <div class="d-flex align-items-center justify-content-center h-100">
-                <div class="d-flex flex-column">
-                    <h1 class="text align-self-center p-2" style="color: #f04545">Metrics</h1>
-                    <!-- <button class="btn btn-primary align-self-center p-2" type="button" id="mybtn" name="button">POWER</button> -->
-                </div>
-            </div>
-        </header>
-    </section>
+<body style="padding: 10px;">
+    <div class="row">
+        <div class="col-sm-4 text-center">
+            <button type="button" id="pwron" class="btn btn-success">POWER ON</button>
+        </div>
+        <div class="col-sm-4 text-center">
+            <button type="button" id="pwroff" class="btn btn-danger">POWER OFF</button>
+        </div>
+        <div class="col-sm-4 text-center">
+            <button type="button" id="motrev" class="btn btn-warning">MOTOR REV</button>
+        </div>
+    </div>
     <div id="metric">
-        <h3><u>MOTOR DETAILS</u></h3>
+        <h3><u>MOTOR READING</u></h3>
         <div class="row">
             <div class="col-sm-2">
                 <div id="motor_volt_div">
@@ -112,7 +114,7 @@ can
             </div>
         </div>
         <br>
-        <h3><u>TODAY DISCHARGE AND ENERGY</u></h3>
+        <h3><u>PANEL READING</u></h3>
         <div class="row">
             <div class="col-sm-4">
                 <div id="panel_volt">
@@ -132,48 +134,48 @@ can
         </div>
         <br>
         <h3><u>DEVICE DETAILS</u></h3>
-        <div style="border:2px solid black; border-radius: 15px;">
+        <div style="padding: 5px; border:2px solid black; border-radius: 15px;">
             <div class="row">
-                <div class="col-sm-4">
+                <div class="col-sm-4 text-center">
                     <h6 id="hid">RMU SR NO: </h6> <h6 id="rmuno">N/A</h6>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-4 text-center">
                     <h6 id="hid">Modem SR NO: </h6> <h6 id="modemno">N/A</h6>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-4 text-center">
                     <h6 id="hid">Modem IP: </h6> <h6 id="modemip">N/A</h6>
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-4">
+                <div class="col-sm-4 text-center">
                     <h6 id="hid">Telephone NO: </h6> <h6 id="tele">N/A</h6>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-4 text-center">
                     <h6 id="hid">Reading Date: </h6> <h6 id="readdate">N/A</h6>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-4 text-center">
                     <h6 id="hid">RMU RTC: </h6> <h6 id="rtcdate">N/A</h6>
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-4">
+                <div class="col-sm-4 text-center">
                     <h6 id="hid">UP Time: </h6> <h6 id="up">N/A</h6>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-4 text-center">
                     <h6 id="hid">OFF Time: </h6> <h6 id="off">N/A</h6>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-4 text-center">
                     <h6 id="hid">STATUS: </h6> <h6 id="status">N/A</h6>
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-4">
+                <div class="col-sm-4 text-center">
                     <h6 id="hid">Latitude: </h6> <h6 id="lat">N/A</h6>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-4 text-center">
                     <h6 id="hid">Longitude: </h6> <h6 id="lon">N/A</h6>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-4 text-center">
                     <h6 id="hid">SIM IMEI: </h6> <h6 id="sim">N/A</h6>
                 </div>
             </div>
@@ -197,16 +199,22 @@ document.getElementById('rtcdate').innerText = data['rtcdate'];
 </script> -->
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
+const socket = io.connect('http://localhost:5000/');
 $(document).ready(function(){
-  $('#mybtn').on('click', function(){
-      $('#metric').toggle();
+  $('#pwron').on('click', function(){
+      socket.emit('pwron', 'MOTORON');
+  });
+  $('#pwroff').on('click', function(){
+      socket.emit('pwroff', 'MOTOROFF');
+  })
+  $('#motrev').on('click', function(){
+      socket.emit('motrev', 'MOTORREV');
   })
 });
 google.charts.load('current', {'packages':['gauge']});
 google.charts.setOnLoadCallback(drawChart);
 
 function drawChart() {
-    var socket = io.connect('http://3.135.62.223:5000/');
     var width1 = 100;
     var height1 = 100;
     var motor_chart = {

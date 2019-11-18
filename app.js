@@ -96,7 +96,42 @@ io.on('connection', function (socket) {
     socket.join('mydevice');
     socket.on('myevent', function(data) {
         io.to('mydevice').emit('news', data);
-    })
+    });
+    socket.on('pwron', function(data){
+        console.log(data);
+    });
+    socket.on('pwroff', function(data){
+        let rmuno = 'N/A';
+        let modemno = 'N/A';
+        let modemip = 'N/A';
+        let tele = 'N/A';
+        let readdate = 'N/A';
+        let rtcdate = 'N/A';
+        let mvol = 0;
+        let mcur = 0;
+        let mpow = 0;
+        let mfreq = 0;
+        let mrpm = 0;
+        let up = 'N/A';
+        let off = 'N/A';
+        let status = 'N/A';
+        let lat = 'N/A';
+        let lng = 'N/A';
+        let pvol = 0;
+        let pcurr = 0;
+        let ppow = 0;
+        let imei = 'N/A';
+        io.to('mydevice').emit('news',
+        {
+            rmuno: rmuno, modemno: modemno, modemip: modemip, tele: tele,
+            readdate: readdate, rtcdate: rtcdate, mvol: mvol, mcur: mcur, mpow: mpow,
+            mfreq: mfreq, mrpm: mrpm, up: up, off: off, status: status, lat: lat, lng: lng,
+            pvol: pvol, pcurr: pcurr, ppow: ppow, imei: imei
+        });
+    });
+    socket.on('motrev', function(data){
+        console.log(data);
+    });
 });
 
 // setTimeout(()=>{
