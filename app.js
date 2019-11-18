@@ -11,18 +11,18 @@ var net = require('net');
 // Bring in the database object
 const config = require('./config/database');
 
-// Mongodb Config
-mongoose.set('useCreateIndex', true);
-
-// Connect with the database
-mongoose.connect(config.database, {
-    useNewUrlParser: true
-})
-.then(() => {
-    console.log('Databse connected successfully ' + config.database);
-}).catch(err => {
-    console.log(err);
-});
+// // Mongodb Config
+// mongoose.set('useCreateIndex', true);
+//
+// // Connect with the database
+// mongoose.connect(config.database, {
+//     useNewUrlParser: true
+// })
+// .then(() => {
+//     console.log('Databse connected successfully ' + config.database);
+// }).catch(err => {
+//     console.log(err);
+// });
 
 // Initialize the app
 const app = express();
@@ -39,16 +39,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(session({
-    secret: 'keyboard cat',
-    store: new MongoStore({
-        url: 'mongodb://localhost/test-app',
-        touchAfter: 24 * 3600 // time period in seconds
-    }),
-    saveUninitialized: true,
-    resave: true,
-    cookie: {  httpOnly: true,  secure: false  }
-}));
+// app.use(session({
+//     secret: 'keyboard cat',
+//     store: new MongoStore({
+//         url: 'mongodb://localhost/test-app',
+//         touchAfter: 24 * 3600 // time period in seconds
+//     }),
+//     saveUninitialized: true,
+//     resave: true,
+//     cookie: {  httpOnly: true,  secure: false  }
+// }));
 
 
 // Passport Middleware
@@ -61,7 +61,8 @@ app.engine('handlebars', exphbs({
 app.set("view engine", "handlebars");
 
 app.get('/', (req, res) => {
-    res.redirect('/user/login');
+    // res.redirect('/user/login');
+    res.render('UserLogin', {loginType: "User"});
 });
 
 // Bring in the user routes
