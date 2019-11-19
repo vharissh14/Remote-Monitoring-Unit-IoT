@@ -12,7 +12,7 @@ var net = require('net');
 const config = require('./config/database');
 
 var ioclient = require('socket.io-client');
-var socketclient = ioclient.connect('http://localhost:5000');
+const socketclient = ioclient.connect('http://localhost:5000');
 
 // setTimeout(()=>{
 //     console.log('ext');
@@ -98,7 +98,7 @@ io.on('connection', function (socket) {
         io.to('mydevice').emit('news', data);
     });
     socket.on('pwron', function(data){
-        console.log(data);
+        io.to('mydevice').emit('pwron1', {data: 'on'});
     });
     socket.on('pwroff', function(data){
         let rmuno = 'N/A';
@@ -121,16 +121,18 @@ io.on('connection', function (socket) {
         let pcurr = 0;
         let ppow = 0;
         let imei = 'N/A';
+        let fault = 1;
         io.to('mydevice').emit('news',
         {
             rmuno: rmuno, modemno: modemno, modemip: modemip, tele: tele,
             readdate: readdate, rtcdate: rtcdate, mvol: mvol, mcur: mcur, mpow: mpow,
             mfreq: mfreq, mrpm: mrpm, up: up, off: off, status: status, lat: lat, lng: lng,
-            pvol: pvol, pcurr: pcurr, ppow: ppow, imei: imei
+            pvol: pvol, pcurr: pcurr, ppow: ppow, imei: imei, fault: fault
         });
+        io.to('mydevice').emit('pwroff1', {data: 'off'});
     });
     socket.on('motrev', function(data){
-        console.log(data);
+        io.to('mydevice').emit('motrev1', {data: 'motrev'});
     });
 });
 
@@ -145,32 +147,46 @@ function onClientConnected(sock) {
     sock.setEncoding("utf8");
     sock.on('data', function(data) {
         let iotdata = data.split('#');
-        let rmuno = iotdata[0];
-        let modemno = iotdata[1];
-        let modemip = iotdata[2];
-        let tele = iotdata[3];
-        let readdate = iotdata[4];
-        let rtcdate = iotdata[5];
-        let mvol = iotdata[6];
-        let mcur = iotdata[7];
-        let mpow = iotdata[8];
-        let mfreq = iotdata[9];
-        let mrpm = iotdata[10];
-        let up = iotdata[15];
-        let off = iotdata[16];
-        let status = iotdata[17];
-        let lat = iotdata[18];
-        let lng = iotdata[19];
-        let pvol = iotdata[20];
-        let pcurr = iotdata[21];
-        let ppow = iotdata[22];
-        let imei = iotdata[23];
-        socketclient.emit('myevent',
-        { rmuno: rmuno, modemno: modemno, modemip: modemip, tele: tele,
-            readdate: readdate, rtcdate: rtcdate, mvol: mvol, mcur: mcur, mpow: mpow,
-            mfreq: mfreq, mrpm: mrpm, up: up, off: off, status: status, lat: lat, lng: lng,
-            pvol: pvol, pcurr: pcurr, ppow: ppow, imei: imei
-        });
+        if(iotdata.length > 2) {
+          let rmuno = iotdata[0];
+          let modemno = iotdata[1];
+          let modemip = iotdata[2];
+          let tele = iotdata[3];
+          let readdate = iotdata[4];
+          let rtcdate = iotdata[5];
+          let mvol = iotdata[6];
+          let mcur = iotdata[7];
+          let mpow = iotdata[8];
+          let mfreq = iotdata[9];
+          let mrpm = iotdata[10];
+          let up = iotdata[15];
+          let off = iotdata[16];
+          let status = iotdata[17];
+          let lat = iotdata[18];
+          let lng = iotdata[19];
+          let pvol = iotdata[20];
+          let pcurr = iotdata[21];
+          let ppow = iotdata[22];
+          let imei = iotdata[23];
+          let fault = iotdata[24];
+          socketclient.emit('myevent',
+          {   rmuno: rmuno, modemno: modemno, modemip: modemip, tele: tele,
+              readdate: readdate, rtcdate: rtcdate, mvol: mvol, mcur: mcur, mpow: mpow,
+              mfreq: mfreq, mrpm: mrpm, up: up, off: off, status: status, lat: lat, lng: lng,
+              pvol: pvol, pcurr: pcurr, ppow: ppow, imei: imei, fault: fault
+          });
+        }
+        else{
+          console.log(data);
+        }
     });
-
+    socketclient.on('pwroff1', function(data){
+      sock.write('MOTOROFF');
+    });
+    socketclient.on('pwron1', function(data){
+      sock.write('MOTORON');
+    })
+    socketclient.on('motrev1', function(data){
+      sock.write('MOTORREV');
+    })
 };

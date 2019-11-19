@@ -13,11 +13,15 @@ label {
 #hcol {
     color: #1CC8A7;
 }
-
-/*
-.col-sm-2 {
-margin: 10px;
-} */
+.dot {
+  height: 50px;
+  width: 50px;
+  background-color: #bbb;
+  border-radius: 50%;
+  border-color: #000;
+  border-style: solid;
+  display: inline-block;
+}
 </style>
 <!-- <body class="bg-gradient-primary">
 
@@ -108,9 +112,8 @@ can
                 </div>
             </div>
             <div class="col-sm-2">
-                <div id="motor_power_div">
-
-                </div>
+                <h6 id="hid">FAULT </h6>
+                <span id="dot" class="dot"> </span>
             </div>
         </div>
         <br>
@@ -186,17 +189,6 @@ can
 </body>
 <script src="/socket.io/socket.io.js"></script>
 <script src="../vendor/jquery/jquery.min.js"></script>
-<!-- <script>
-var socket = io.connect('http://localhost:5000/');
-socket.on('news', function (data) {
-document.getElementById('rmuno').innerText = data['rmuno'];
-document.getElementById('modemno').innerText = data['modemno'];
-document.getElementById('modemip').innerText = data['modemip'];
-document.getElementById('tele').innerText = data['tele'];
-document.getElementById('readdate').innerText = data['readdate'];
-document.getElementById('rtcdate').innerText = data['rtcdate'];
-});
-</script> -->
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
 const socket = io.connect('http://localhost:5000/');
@@ -308,6 +300,12 @@ function drawChart() {
         document.getElementById('lat').innerText = data['lat'];
         document.getElementById('lon').innerText = data['lng'];
         document.getElementById('sim').innerText = data['imei'];
+        if(data['fault'] == "0"){
+          $('.dot').css("background-color", "green");
+        }
+        else{
+          $('.dot').css("background-color", "red");
+        }
     });
     // setInterval(function() {
     //   data.setValue(0, 1, 40 + Math.round(60 * Math.random()));
