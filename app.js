@@ -9,7 +9,17 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 var net = require('net');
 // Bring in the database object
+const mysql = require('mysql');
 const config = require('./config/database');
+
+var pool      =    mysql.createPool({
+    connectionLimit : 100, //important
+    host     : '172.31.5.124',
+    user     : 'root',
+    password : 'Apollo@13',
+    database : 'iot',
+    debug    :  false
+});
 
 var ioclient = require('socket.io-client');
 const socketclient = ioclient.connect('http://localhost:5000');
@@ -169,12 +179,13 @@ function onClientConnected(sock) {
           let ppow = iotdata[22];
           let imei = iotdata[23];
           let fault = iotdata[24];
-          socketclient.emit('myevent',
-          {   rmuno: rmuno, modemno: modemno, modemip: modemip, tele: tele,
+          let findata = {   rmuno: rmuno, modemno: modemno, modemip: modemip, tele: tele,
               readdate: readdate, rtcdate: rtcdate, mvol: mvol, mcur: mcur, mpow: mpow,
               mfreq: mfreq, mrpm: mrpm, up: up, off: off, status: status, lat: lat, lng: lng,
               pvol: pvol, pcurr: pcurr, ppow: ppow, imei: imei, fault: fault
-          });
+          };
+          socketclient.emit('myevent',findata);
+          addRow(findata);
         }
         else{
           console.log(data);
@@ -190,3 +201,16 @@ function onClientConnected(sock) {
       sock.write('MOTORREV');
     })
 };
+
+function addRow(data) {
+    let insertQuery = 'INSERT INTO ?? (rmuno,modemno,modemip,tele,readdate,rtcdate,mvol,mcur,mpow,mfreq,mrpm,up,off,status,lat,lon,pvol,pcurr,ppow,imei,fault) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+    let query = mysql.format(insertQuery,["iotdata",data.rmuno,data.modemno,data.modemip,data.tele,data.readdate,
+    data.rtcdate,data.mvol,data.mcur,data.mpow,data.mfreq,data.mrpm,data.up,data.off,data.status,data.lat,data.lng,
+    data.pvol,data.pcurr,data.ppow,data.imei,data.fault]);
+    pool.query(query,(err, response) => {
+        if(err) {
+            console.error(err);
+            return;
+        }
+    });
+}
