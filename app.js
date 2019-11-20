@@ -91,7 +91,7 @@ io.on('connection', function (socket) {
     socket.room = data.data;
     socket.join(data.data);
 
-    if(data['type']=='tcp') {
+    if(data['type']!='tcp') {
         Iotdata.getLastData(data.data, function(err, result){
           io.to(socket.room).emit('news', result[0]);
         })
