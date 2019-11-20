@@ -299,7 +299,7 @@ function drawChart() {
     });
 }
 setTimeout(()=>{
-  socket.emit('subscribe', {data: deviceid});
+  socket.emit('subscribe', {data: deviceid, type: 'socket'});
 }, 1000)
 </script>
 

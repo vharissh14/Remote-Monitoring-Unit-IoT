@@ -91,14 +91,14 @@ io.on('connection', function (socket) {
     socket.room = data.data;
     socket.join(data.data);
 
-    // io.to(data.data).emit('myeve', 'hello');
-    Iotdata.getLastData(data.data, function(err, result){
-      io.to(socket.room).emit('news', result[0]);
-    })
+    if(data['type']=='tcp') {
+        Iotdata.getLastData(data.data, function(err, result){
+          io.to(socket.room).emit('news', result[0]);
+        })
+    }
+
   })
   socket.on('myevent', function(data) {
-    console.log(socket.room);
-    console.log(data);
     io.to(socket.room).emit('news', data);
   });
   socket.on('pwron', function(data){
@@ -182,7 +182,7 @@ function onClientConnected(sock) {
     }
     else{
       let filterdata = data.split('\n')[0];
-      socketclient.emit('subscribe', {data: filterdata});
+      socketclient.emit('subscribe', {data: filterdata, type: 'tcp'});
       console.log(data);
     }
   });
