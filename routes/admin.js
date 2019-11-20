@@ -12,7 +12,6 @@ router.get('/login', (req, res) => {
 });
 
 router.get('/dashboard', isAuthenticated, (req, res) => {
-    console.log(req.user);
     res.render('Dashboard', {page: "dashboard", username: req.user.username})
 });
 

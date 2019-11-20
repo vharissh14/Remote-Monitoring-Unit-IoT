@@ -97,6 +97,11 @@ io.on('connection', function (socket) {
   socket.on('subscribe', function(data){
     socket.room = data.data;
     socket.join(data.data);
+
+    // io.to(data.data).emit('myeve', 'hello');
+    Iotdata.getLastData(data.data, function(err, result){
+      io.to(socket.room).emit('myeve', result[0]);
+    })
   })
   socket.on('myevent', function(data) {
     console.log(socket.room);
@@ -196,5 +201,8 @@ function onClientConnected(sock) {
   })
   socketclient.on('motrev1', function(data){
     sock.write('MOTORREV');
-  })
+  });
+  socketclient.on('myeve', function(data){
+    socketclient.emit('myevent',data);
+  });
 };

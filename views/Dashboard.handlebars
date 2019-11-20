@@ -147,8 +147,6 @@ label {
 <script type="text/javascript">
 const socket = io.connect('http://localhost:5000/');
 var deviceid = $('#devid').val();
-socket.emit('subscribe', {data: deviceid});
-
 $(document).ready(function(){
   $('#pwron').on('click', function(){
       socket.emit('pwron', 'MOTORON');
@@ -265,6 +263,9 @@ function drawChart() {
         }
     });
 }
+setTimeout(()=>{
+  socket.emit('subscribe', {data: deviceid});
+}, 1000)
 </script>
 
 <!-- Bootstrap core JavaScript-->
