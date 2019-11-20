@@ -12,13 +12,6 @@ const config = require('./config/database');
 const Iotdata = require('./models/iotdata');
 
 var ioclient = require('socket.io-client');
-// var ioclient = require('socket.io-client');
-// var socketclient = ioclient.connect('http://localhost:5000');
-
-// setTimeout(()=>{
-//     console.log('ext');
-//     socketclient.emit('myevent', {sasd:'sad'});
-// },10000)
 
 // // Mongodb Config
 mongoose.set('useCreateIndex', true);
@@ -71,12 +64,12 @@ app.set("view engine", "handlebars");
 
 app.get('/', (req, res) => {
   // res.redirect('/user/login');
-  res.render('UserLogin', {loginType: "User"});
+  res.render('AdminLogin', {loginType: "User"});
 });
 
 // Bring in the user routes
-const users = require('./routes/users');
-app.use('/user', users);
+// const users = require('./routes/users');
+// app.use('/user', users);
 
 const admin = require('./routes/admin');
 app.use('/admin', admin);
@@ -202,7 +195,4 @@ function onClientConnected(sock) {
   socketclient.on('motrev1', function(data){
     sock.write('MOTORREV');
   });
-  // socketclient.on('myeve', function(data){
-  //   socketclient.emit('myevent',data);
-  // });
 };

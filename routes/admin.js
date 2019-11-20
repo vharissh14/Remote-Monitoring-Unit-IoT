@@ -12,29 +12,29 @@ router.get('/login', (req, res) => {
 });
 
 router.get('/dashboard', isAuthenticated, (req, res) => {
-    res.render('Dashboard', {page: "dashboard", username: req.user.username})
+    res.render('Admin/AdminDashboard', {page: "dashboard", username: req.user.username})
 });
 
-router.get('/addUser', isAuthenticated, (req, res) => {
-    res.render('Admin/AdminAddUser', {page: "addUser", username: req.user.username})
-});
+// router.get('/addUser', isAuthenticated, (req, res) => {
+//     res.render('Admin/AdminAddUser', {page: "addUser", username: req.user.username})
+// });
 
 router.get('/logout', isAuthenticated, (req, res) => {
     req.logout();
     res.redirect('/admin/login');
 });
 
-router.get('/listUser', isAuthenticated, (req, res) => {
-    User.getAllUser((err, data) => {
-        return res.json(data);
-    });
-});
+// router.get('/listUser', isAuthenticated, (req, res) => {
+//     User.getAllUser((err, data) => {
+//         return res.json(data);
+//     });
+// });
 
-router.get('/manageUser', isAuthenticated, (req, res) => {
-    User.getAllUser((err, data) => {
-        res.render('Admin/AdminManageUser', {page: "manageUser", username: req.user.username, data: data})
-    });
-});
+// router.get('/manageUser', isAuthenticated, (req, res) => {
+//     User.getAllUser((err, data) => {
+//         res.render('Admin/AdminManageUser', {page: "manageUser", username: req.user.username, data: data})
+//     });
+// });
 
 router.get('*', isAuthenticated, (req, res) => {
     res.redirect('/admin/dashboard');
@@ -110,14 +110,17 @@ router.post('/register', (req, res) => {
     });
 });
 
-router.post('/login', passport.authenticate('local'), (req, res) => {
+router.post('/login', passport.authenticate('local', { successRedirect:'/admin/dashboard',
+                                                    failureRedirect: '/admin/login' }), (req, res) => {
     res.redirect('/admin/dashboard');
 });
 
 passport.use(new LocalStrategy(
     function(username, password, done) {
         Admin.getAdminByUsername(username, (err, admin) => {
-            if (err) throw err;
+            if (err) {
+                console.log(err);
+            };
             if (!admin) {
                 return done(null, false, {message: "Admin Account Does Not Exit."})
             }
