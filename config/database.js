@@ -1,4 +1,4 @@
 module.exports = {
-    database: 'mongodb://localhost:27017/authentication_app',
+    database: 'mongodb://172.31.45.82:27017/iotapp',
     secret: 'yoursecret'
 }
