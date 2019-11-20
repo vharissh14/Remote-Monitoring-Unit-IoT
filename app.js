@@ -100,7 +100,7 @@ io.on('connection', function (socket) {
 
     // io.to(data.data).emit('myeve', 'hello');
     Iotdata.getLastData(data.data, function(err, result){
-      io.to(socket.room).emit('myeve', result[0]);
+      io.to(socket.room).emit('news', result[0]);
     })
   })
   socket.on('myevent', function(data) {
@@ -202,7 +202,7 @@ function onClientConnected(sock) {
   socketclient.on('motrev1', function(data){
     sock.write('MOTORREV');
   });
-  socketclient.on('myeve', function(data){
-    socketclient.emit('myevent',data);
-  });
+  // socketclient.on('myeve', function(data){
+  //   socketclient.emit('myevent',data);
+  // });
 };
