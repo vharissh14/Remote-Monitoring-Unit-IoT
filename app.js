@@ -20,9 +20,9 @@ var pool      =    mysql.createPool({
     database : 'iot',
     debug    :  false
 });
-
-var ioclient = require('socket.io-client');
-const socketclient = ioclient.connect('http://localhost:5000');
+    var ioclient = require('socket.io-client');
+// var ioclient = require('socket.io-client');
+// var socketclient = ioclient.connect('http://localhost:5000');
 
 // setTimeout(()=>{
 //     console.log('ext');
@@ -30,17 +30,17 @@ const socketclient = ioclient.connect('http://localhost:5000');
 // },10000)
 
 // // Mongodb Config
-// mongoose.set('useCreateIndex', true);
+mongoose.set('useCreateIndex', true);
 //
 // // Connect with the database
-// mongoose.connect(config.database, {
-//     useNewUrlParser: true
-// })
-// .then(() => {
-//     console.log('Databse connected successfully ' + config.database);
-// }).catch(err => {
-//     console.log(err);
-// });
+mongoose.connect(config.database, {
+    useNewUrlParser: true
+})
+.then(() => {
+    console.log('Databse connected successfully ' + config.database);
+}).catch(err => {
+    console.log(err);
+});
 
 // Initialize the app
 const app = express();
@@ -57,16 +57,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// app.use(session({
-//     secret: 'keyboard cat',
-//     store: new MongoStore({
-//         url: 'mongodb://localhost/test-app',
-//         touchAfter: 24 * 3600 // time period in seconds
-//     }),
-//     saveUninitialized: true,
-//     resave: true,
-//     cookie: {  httpOnly: true,  secure: false  }
-// }));
+app.use(session({
+    secret: 'keyboard cat',
+    store: new MongoStore({
+        url: 'mongodb://localhost/test-app',
+        touchAfter: 24 * 3600 // time period in seconds
+    }),
+    saveUninitialized: true,
+    resave: true,
+    cookie: {  httpOnly: true,  secure: false  }
+}));
 
 
 // Passport Middleware
@@ -103,12 +103,17 @@ server.listen(9000, ()=>{
 });
 
 io.on('connection', function (socket) {
-    socket.join('mydevice');
+    socket.on('subscribe', function(data){
+      socket.room = data.data;
+      socket.join(data.data);
+    })
     socket.on('myevent', function(data) {
-        io.to('mydevice').emit('news', data);
+        console.log(socket.room);
+        console.log(data);
+        io.to(socket.room).emit('news', data);
     });
     socket.on('pwron', function(data){
-        io.to('mydevice').emit('pwron1', {data: 'on'});
+        io.to(socket.room).emit('pwron1', {data: 'on'});
     });
     socket.on('pwroff', function(data){
         let rmuno = 'N/A';
@@ -132,28 +137,22 @@ io.on('connection', function (socket) {
         let ppow = 0;
         let imei = 'N/A';
         let fault = 1;
-        io.to('mydevice').emit('news',
+        io.to(socket.room).emit('news',
         {
             rmuno: rmuno, modemno: modemno, modemip: modemip, tele: tele,
             readdate: readdate, rtcdate: rtcdate, mvol: mvol, mcur: mcur, mpow: mpow,
             mfreq: mfreq, mrpm: mrpm, up: up, off: off, status: status, lat: lat, lng: lng,
             pvol: pvol, pcurr: pcurr, ppow: ppow, imei: imei, fault: fault
         });
-        io.to('mydevice').emit('pwroff1', {data: 'off'});
+        io.to(socket.room).emit('pwroff1', {data: 'off'});
     });
     socket.on('motrev', function(data){
-        io.to('mydevice').emit('motrev1', {data: 'motrev'});
+        io.to(socket.room).emit('motrev1', {data: 'motrev'});
     });
 });
 
-// setTimeout(()=>{
-//     console.log('hello');
-//     socketclient.on('connect', function(socket){
-//         socket.emit('myevent', {a:1});
-//     })
-// }, 5000);
-
 function onClientConnected(sock) {
+    var socketclient = ioclient.connect('http://localhost:5000');
     sock.setEncoding("utf8");
     sock.on('data', function(data) {
         let iotdata = data.split('#');
@@ -185,9 +184,11 @@ function onClientConnected(sock) {
               pvol: pvol, pcurr: pcurr, ppow: ppow, imei: imei, fault: fault
           };
           socketclient.emit('myevent',findata);
-          addRow(findata);
+          // addRow(findata);
         }
         else{
+          let filterdata = data.split('\n')[0];
+          socketclient.emit('subscribe', {data: filterdata});
           console.log(data);
         }
     });

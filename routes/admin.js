@@ -12,7 +12,8 @@ router.get('/login', (req, res) => {
 });
 
 router.get('/dashboard', isAuthenticated, (req, res) => {
-    res.render('Admin/AdminDashboard', {page: "dashboard", username: req.user.username})
+    console.log(req.user);
+    res.render('Dashboard', {page: "dashboard", username: req.user.username})
 });
 
 router.get('/addUser', isAuthenticated, (req, res) => {
