@@ -8,19 +8,10 @@ const path = require('path');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 var net = require('net');
-// Bring in the database object
-const mysql = require('mysql');
 const config = require('./config/database');
+const Iotdata = require('./models/iotdata');
 
-var pool      =    mysql.createPool({
-    connectionLimit : 100, //important
-    host     : '172.31.5.124',
-    user     : 'root',
-    password : 'Apollo@13',
-    database : 'iot',
-    debug    :  false
-});
-    var ioclient = require('socket.io-client');
+var ioclient = require('socket.io-client');
 // var ioclient = require('socket.io-client');
 // var socketclient = ioclient.connect('http://localhost:5000');
 
@@ -34,12 +25,12 @@ mongoose.set('useCreateIndex', true);
 //
 // // Connect with the database
 mongoose.connect(config.database, {
-    useNewUrlParser: true
+  useNewUrlParser: true
 })
 .then(() => {
-    console.log('Databse connected successfully ' + config.database);
+  console.log('Databse connected successfully ' + config.database);
 }).catch(err => {
-    console.log(err);
+  console.log(err);
 });
 
 // Initialize the app
@@ -58,14 +49,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(session({
-    secret: 'keyboard cat',
-    store: new MongoStore({
-        url: 'mongodb://localhost/test-app',
-        touchAfter: 24 * 3600 // time period in seconds
-    }),
-    saveUninitialized: true,
-    resave: true,
-    cookie: {  httpOnly: true,  secure: false  }
+  secret: 'keyboard cat',
+  store: new MongoStore({
+    url: 'mongodb://localhost/test-app',
+    touchAfter: 24 * 3600 // time period in seconds
+  }),
+  saveUninitialized: true,
+  resave: true,
+  cookie: {  httpOnly: true,  secure: false  }
 }));
 
 
@@ -74,13 +65,13 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.engine('handlebars', exphbs({
-    partialsDir: __dirname + "/views/Partials/"
+  partialsDir: __dirname + "/views/Partials/"
 }));
 app.set("view engine", "handlebars");
 
 app.get('/', (req, res) => {
-    // res.redirect('/user/login');
-    res.render('UserLogin', {loginType: "User"});
+  // res.redirect('/user/login');
+  res.render('UserLogin', {loginType: "User"});
 });
 
 // Bring in the user routes
@@ -93,125 +84,117 @@ app.use('/admin', admin);
 var server = net.createServer(onClientConnected);
 
 var server1 = app.listen(PORT, () => {
-    console.log(`Server started on port ${PORT}`);
+  console.log(`Server started on port ${PORT}`);
 });
 
 var io = require('socket.io')(server1);
 
 server.listen(9000, ()=>{
-    console.log("TCP Server on Port 9000")
+  console.log("TCP Server on Port 9000")
 });
 
 io.on('connection', function (socket) {
-    socket.on('subscribe', function(data){
-      socket.room = data.data;
-      socket.join(data.data);
-    })
-    socket.on('myevent', function(data) {
-        console.log(socket.room);
-        console.log(data);
-        io.to(socket.room).emit('news', data);
+  socket.on('subscribe', function(data){
+    socket.room = data.data;
+    socket.join(data.data);
+  })
+  socket.on('myevent', function(data) {
+    console.log(socket.room);
+    console.log(data);
+    io.to(socket.room).emit('news', data);
+  });
+  socket.on('pwron', function(data){
+    io.to(socket.room).emit('pwron1', {data: 'on'});
+  });
+  socket.on('pwroff', function(data){
+    let rmuno = 'N/A';
+    let modemno = 'N/A';
+    let modemip = 'N/A';
+    let tele = 'N/A';
+    let readdate = 'N/A';
+    let rtcdate = 'N/A';
+    let mvol = 0;
+    let mcur = 0;
+    let mpow = 0;
+    let mfreq = 0;
+    let mrpm = 0;
+    let up = 'N/A';
+    let off = 'N/A';
+    let status = 'N/A';
+    let lat = 'N/A';
+    let lng = 'N/A';
+    let pvol = 0;
+    let pcurr = 0;
+    let ppow = 0;
+    let imei = 'N/A';
+    let fault = 1;
+    io.to(socket.room).emit('news',
+    {
+      rmuno: rmuno, modemno: modemno, modemip: modemip, tele: tele,
+      readdate: readdate, rtcdate: rtcdate, mvol: mvol, mcur: mcur, mpow: mpow,
+      mfreq: mfreq, mrpm: mrpm, up: up, off: off, status: status, lat: lat, lng: lng,
+      pvol: pvol, pcurr: pcurr, ppow: ppow, imei: imei, fault: fault
     });
-    socket.on('pwron', function(data){
-        io.to(socket.room).emit('pwron1', {data: 'on'});
-    });
-    socket.on('pwroff', function(data){
-        let rmuno = 'N/A';
-        let modemno = 'N/A';
-        let modemip = 'N/A';
-        let tele = 'N/A';
-        let readdate = 'N/A';
-        let rtcdate = 'N/A';
-        let mvol = 0;
-        let mcur = 0;
-        let mpow = 0;
-        let mfreq = 0;
-        let mrpm = 0;
-        let up = 'N/A';
-        let off = 'N/A';
-        let status = 'N/A';
-        let lat = 'N/A';
-        let lng = 'N/A';
-        let pvol = 0;
-        let pcurr = 0;
-        let ppow = 0;
-        let imei = 'N/A';
-        let fault = 1;
-        io.to(socket.room).emit('news',
-        {
-            rmuno: rmuno, modemno: modemno, modemip: modemip, tele: tele,
-            readdate: readdate, rtcdate: rtcdate, mvol: mvol, mcur: mcur, mpow: mpow,
-            mfreq: mfreq, mrpm: mrpm, up: up, off: off, status: status, lat: lat, lng: lng,
-            pvol: pvol, pcurr: pcurr, ppow: ppow, imei: imei, fault: fault
-        });
-        io.to(socket.room).emit('pwroff1', {data: 'off'});
-    });
-    socket.on('motrev', function(data){
-        io.to(socket.room).emit('motrev1', {data: 'motrev'});
-    });
+    io.to(socket.room).emit('pwroff1', {data: 'off'});
+  });
+  socket.on('motrev', function(data){
+    io.to(socket.room).emit('motrev1', {data: 'motrev'});
+  });
 });
 
 function onClientConnected(sock) {
-    var socketclient = ioclient.connect('http://localhost:5000');
-    sock.setEncoding("utf8");
-    sock.on('data', function(data) {
-        let iotdata = data.split('#');
-        if(iotdata.length > 2) {
-          let rmuno = iotdata[0];
-          let modemno = iotdata[1];
-          let modemip = iotdata[2];
-          let tele = iotdata[3];
-          let readdate = iotdata[4];
-          let rtcdate = iotdata[5];
-          let mvol = iotdata[6];
-          let mcur = iotdata[7];
-          let mpow = iotdata[8];
-          let mfreq = iotdata[9];
-          let mrpm = iotdata[10];
-          let up = iotdata[15];
-          let off = iotdata[16];
-          let status = iotdata[17];
-          let lat = iotdata[18];
-          let lng = iotdata[19];
-          let pvol = iotdata[20];
-          let pcurr = iotdata[21];
-          let ppow = iotdata[22];
-          let imei = iotdata[23];
-          let fault = iotdata[24];
-          let findata = {   rmuno: rmuno, modemno: modemno, modemip: modemip, tele: tele,
-              readdate: readdate, rtcdate: rtcdate, mvol: mvol, mcur: mcur, mpow: mpow,
-              mfreq: mfreq, mrpm: mrpm, up: up, off: off, status: status, lat: lat, lng: lng,
-              pvol: pvol, pcurr: pcurr, ppow: ppow, imei: imei, fault: fault
-          };
-          socketclient.emit('myevent',findata);
-          // addRow(findata);
+  var socketclient = ioclient.connect('http://localhost:5000');
+  sock.setEncoding("utf8");
+  sock.on('data', function(data) {
+    let iotdata = data.split('#');
+    if(iotdata.length > 2) {
+      let rmuno = iotdata[0];
+      let modemno = iotdata[1];
+      let modemip = iotdata[2];
+      let tele = iotdata[3];
+      let readdate = iotdata[4];
+      let rtcdate = iotdata[5];
+      let mvol = iotdata[6];
+      let mcur = iotdata[7];
+      let mpow = iotdata[8];
+      let mfreq = iotdata[9];
+      let mrpm = iotdata[10];
+      let up = iotdata[15];
+      let off = iotdata[16];
+      let status = iotdata[17];
+      let lat = iotdata[18];
+      let lng = iotdata[19];
+      let pvol = iotdata[20];
+      let pcurr = iotdata[21];
+      let ppow = iotdata[22];
+      let imei = iotdata[23];
+      let fault = iotdata[24];
+      let findata = {   rmuno: rmuno, modemno: modemno, modemip: modemip, tele: tele,
+        readdate: readdate, rtcdate: rtcdate, mvol: mvol, mcur: mcur, mpow: mpow,
+        mfreq: mfreq, mrpm: mrpm, up: up, off: off, status: status, lat: lat, lng: lng,
+        pvol: pvol, pcurr: pcurr, ppow: ppow, imei: imei, fault: fault, timestamp: Date.now()
+      };
+      socketclient.emit('myevent',findata);
+      // addRow(findata);
+      Iotdata.insertData(findata, (err, user) => {
+        if (err) {
+          console.log("Error insert");
         }
-        else{
-          let filterdata = data.split('\n')[0];
-          socketclient.emit('subscribe', {data: filterdata});
-          console.log(data);
-        }
-    });
-    socketclient.on('pwroff1', function(data){
-      sock.write('MOTOROFF');
-    });
-    socketclient.on('pwron1', function(data){
-      sock.write('MOTORON');
-    })
-    socketclient.on('motrev1', function(data){
-      sock.write('MOTORREV');
-    })
+      });
+    }
+    else{
+      let filterdata = data.split('\n')[0];
+      socketclient.emit('subscribe', {data: filterdata});
+      console.log(data);
+    }
+  });
+  socketclient.on('pwroff1', function(data){
+    sock.write('MOTOROFF');
+  });
+  socketclient.on('pwron1', function(data){
+    sock.write('MOTORON');
+  })
+  socketclient.on('motrev1', function(data){
+    sock.write('MOTORREV');
+  })
 };
-
-function addRow(data) {
-    let insertQuery = 'INSERT INTO ?? (rmuno,modemno,modemip,tele,readdate,rtcdate,mvol,mcur,mpow,mfreq,mrpm,up,off,status,lat,lon,pvol,pcurr,ppow,imei,fault) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
-    let query = mysql.format(insertQuery,["iotdata",data.rmuno,data.modemno,data.modemip,data.tele,data.readdate,
-    data.rtcdate,data.mvol,data.mcur,data.mpow,data.mfreq,data.mrpm,data.up,data.off,data.status,data.lat,data.lng,
-    data.pvol,data.pcurr,data.ppow,data.imei,data.fault]);
-    pool.query(query,(err, response) => {
-        if(err) {
-            console.error(err);
-            return;
-        }
-    });
-}
