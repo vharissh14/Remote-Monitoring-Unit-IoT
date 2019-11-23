@@ -43,14 +43,17 @@ label {
         <div class="container-fluid">
             <input type="hidden" id="devid" name="devid" value="{{username}}">
               <div class="row">
-                  <div class="col-sm-4 text-center">
+                  <div class="col-sm-3 text-center">
                       <button type="button" id="pwron" class="btn btn-success">MOTOR ON</button>
                   </div>
-                  <div class="col-sm-4 text-center">
+                  <div class="col-sm-3 text-center">
                       <button type="button" id="pwroff" class="btn btn-danger">MOTOR OFF</button>
                   </div>
-                  <div class="col-sm-4 text-center">
+                  <div class="col-sm-3 text-center">
                       <button type="button" id="motrev" class="btn btn-warning">MOTOR REV</button>
+                  </div>
+                  <div class="col-sm-3 text-center">
+                      <button type="button" id="downloadData" class="btn btn-primary">EXPORT DATA</button>
                   </div>
               </div>
               <div id="metric">
@@ -180,7 +183,8 @@ label {
 <!-- <script src="../vendor/jquery/jquery.min.js"></script> -->
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
-const socket = io.connect('http://18.217.56.18:5000/');
+// const socket = io.connect('http://18.217.56.18:5000/');
+const socket = io.connect('http://localhost:5000/');
 var deviceid = $('#devid').val();
 $(document).ready(function(){
   $('#pwron').on('click', function(){
@@ -191,6 +195,17 @@ $(document).ready(function(){
   })
   $('#motrev').on('click', function(){
       socket.emit('motrev', 'MOTORREV');
+  })
+  $('#downloadData').on('click', function(){
+      $.ajax({
+            url: '/admin/downloadData',
+            type: 'post',
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (data) {
+                console.log(data);
+            }
+        });
   })
 });
 google.charts.load('current', {'packages':['gauge']});

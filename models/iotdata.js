@@ -83,3 +83,7 @@ module.exports.getLastData = function(deviceId, callback) {
 
   Iotdata.find({rmuno: deviceId}).sort({'_id':-1}).limit(1).exec(callback);
 }
+
+module.exports.downloadData = function(deviceId, callback) {
+    Iotdata.find({rmuno: deviceId}).sort({'_id':-1}).exec(callback);
+}

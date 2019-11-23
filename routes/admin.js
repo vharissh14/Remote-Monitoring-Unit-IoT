@@ -4,6 +4,7 @@ const passport = require('passport') , LocalStrategy = require('passport-local')
 const jwt = require('jsonwebtoken');
 const Admin = require('../models/Admin');
 const User = require('../models/User');
+const Iotdata = require('../models/iotdata');
 const config = require('../config/database');
 var generator = require('generate-password');
 
@@ -22,6 +23,13 @@ router.get('/dashboard', isAuthenticated, (req, res) => {
 router.get('/logout', isAuthenticated, (req, res) => {
     req.logout();
     res.redirect('/admin/login');
+});
+
+router.post('/downloadData', isAuthenticated, (req, res) => {
+    console.log("IN JHERE");
+    // Iotdata.downloadData(req.user.username, function(err, result){
+    //     console.log(result);
+    // })
 });
 
 // router.get('/listUser', isAuthenticated, (req, res) => {
