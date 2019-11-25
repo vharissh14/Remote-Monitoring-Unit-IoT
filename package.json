@@ -25,6 +25,7 @@
     "express-session": "^1.17.0",
     "generate-password": "^1.4.2",
     "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.15",
     "mongoose": "^5.7.11",
     "mongoose-auto-increment": "^5.0.1",
     "mongoose-unique-validator": "^2.0.3",

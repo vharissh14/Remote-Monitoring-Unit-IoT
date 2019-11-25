@@ -7,6 +7,7 @@ const User = require('../models/User');
 const Iotdata = require('../models/iotdata');
 const config = require('../config/database');
 var generator = require('generate-password');
+const _ = require('lodash');
 
 router.get('/login', (req, res) => {
     res.render('AdminLogin', {loginType: "Admin", layoutPartial: "admin"});
@@ -26,10 +27,42 @@ router.get('/logout', isAuthenticated, (req, res) => {
 });
 
 router.post('/downloadData', isAuthenticated, (req, res) => {
-    console.log("IN JHERE");
-    // Iotdata.downloadData(req.user.username, function(err, result){
-    //     console.log(result);
-    // })
+    // console.log("IN JHERE");
+    Iotdata.downloadData(req.user.username, function(err, result){
+        var arrayResult = [];
+        if(result!=[]){
+          for(var i=0; i<result.length; i++){
+            let rmuno = result[i]['rmuno'];
+            let modemno = result[i]['modemno'];
+            let modemip = result[i]['modemip'];
+            let tele = result[i]['tele'];
+            let readdate = result[i]['readdate'];
+            let rtcdate = result[i]['rtcdate'];
+            let mvol = result[i]['mvol'];
+            let mcur = result[i]['mcur'];
+            let mpow = result[i]['mpow'];
+            let mfreq = result[i]['mfreq'];
+            let mrpm = result[i]['mrpm'];
+            let up = result[i]['up'];
+            let off = result[i]['off'];
+            let status = result[i]['status'];
+            let lat = result[i]['lat'];
+            let lng = result[i]['lng'];
+            let pvol = result[i]['pvol'];
+            let pcurr = result[i]['pcurr'];
+            let ppow = result[i]['ppow'];
+            let imei = result[i]['imei'];
+            let fault = result[i]['fault'];
+            let findata = [   rmuno, modemno, modemip, tele,
+              readdate, rtcdate, mvol, mcur, mpow,
+              mfreq, mrpm, up, off, status, lat, lng,
+              pvol, pcurr, ppow, imei, fault
+            ];
+            arrayResult.push(findata);
+          }
+        }
+        res.json({data: arrayResult});
+    })
 });
 
 // router.get('/listUser', isAuthenticated, (req, res) => {
