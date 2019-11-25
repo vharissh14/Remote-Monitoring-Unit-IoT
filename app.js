@@ -116,6 +116,10 @@ io.on('connection', function (socket) {
     let mpow = 0;
     let mfreq = 0;
     let mrpm = 0;
+    let tdis = 0;
+    let totdis = 'N/A';
+    let tenergy = 0;
+    let totenergy = 'N/A';
     let up = 'N/A';
     let off = 'N/A';
     let status = 'N/A';
@@ -130,7 +134,8 @@ io.on('connection', function (socket) {
     {
       rmuno: rmuno, modemno: modemno, modemip: modemip, tele: tele,
       readdate: readdate, rtcdate: rtcdate, mvol: mvol, mcur: mcur, mpow: mpow,
-      mfreq: mfreq, mrpm: mrpm, up: up, off: off, status: status, lat: lat, lng: lng,
+      mfreq: mfreq, mrpm: mrpm, tdis: tdis, totdis: totdis, tenergy: tenergy, totenergy: totenergy,
+      up: up, off: off, status: status, lat: lat, lng: lng,
       pvol: pvol, pcurr: pcurr, ppow: ppow, imei: imei, fault: fault
     });
     io.to(socket.room).emit('pwroff1', {data: 'off'});
@@ -157,6 +162,10 @@ function onClientConnected(sock) {
       let mpow = iotdata[8];
       let mfreq = iotdata[9];
       let mrpm = iotdata[10];
+      let tdis = iotdata[11];
+      let totdis = iotdata[12];
+      let tenergy = iotdata[13];
+      let totenergy = iotdata[14];
       let up = iotdata[15];
       let off = iotdata[16];
       let status = iotdata[17];
@@ -169,7 +178,8 @@ function onClientConnected(sock) {
       let fault = iotdata[24];
       let findata = {   rmuno: rmuno, modemno: modemno, modemip: modemip, tele: tele,
         readdate: readdate, rtcdate: rtcdate, mvol: mvol, mcur: mcur, mpow: mpow,
-        mfreq: mfreq, mrpm: mrpm, up: up, off: off, status: status, lat: lat, lng: lng,
+        mfreq: mfreq, mrpm: mrpm, tdis: tdis, totdis: totdis, tenergy: tenergy, totenergy: totenergy,
+        up: up, off: off, status: status, lat: lat, lng: lng,
         pvol: pvol, pcurr: pcurr, ppow: ppow, imei: imei, fault: fault, timestamp: Date.now()
       };
       socketclient.emit('myevent',findata);

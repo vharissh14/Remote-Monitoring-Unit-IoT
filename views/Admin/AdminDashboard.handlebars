@@ -115,6 +115,22 @@ text[text-anchor~=end]{
               </div>
             </div>
             <br>
+            <h3><u>TODAY READING</u></h3>
+            <div class="row">
+              <div class="col-sm-6">
+                <div id="tdis">
+
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div id="tenergy">
+
+                </div>
+              </div>
+            </div>
+            <br>
+
+
             <h3><u>DEVICE DETAILS</u></h3>
             <div style="padding: 5px; border:2px solid black; border-radius: 15px;">
               <div class="row">
@@ -159,6 +175,18 @@ text[text-anchor~=end]{
                 </div>
                 <div class="col-sm-4 text-center">
                   <h6 id="hid">SIM IMEI: </h6> <h6 id="sim">N/A</h6>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-3 text-center">
+                </div>
+                <div class="col-sm-3 text-center">
+                  <h6 id="hid">Total Discharge: </h6> <h6 id="totdis">N/A</h6>
+                </div>
+                <div class="col-sm-3 text-center">
+                  <h6 id="hid">Total Energy: </h6> <h6 id="totenergy">N/A</h6>
+                </div>
+                <div class="col-sm-3 text-center">
                 </div>
               </div>
             </div>
@@ -265,8 +293,8 @@ function drawChart() {
 
 
   var misc_chart = {
-    discharge: google.visualization.arrayToDataTable([['Label', 'Value'],['Discharge (LPM)', 0]]),
-    energy: google.visualization.arrayToDataTable([['Label', 'Value'],['Energy (KWH)', 0]]),
+    discharge: google.visualization.arrayToDataTable([['Label', 'Value'],['Discharge', 0]]),
+    energy: google.visualization.arrayToDataTable([['Label', 'Value'],['Energy', 0]]),
     volt: google.visualization.arrayToDataTable([['Label', 'Value'],['Volt', 0]]),
     current: google.visualization.arrayToDataTable([['Label', 'Value'],['Current', 0]]),
     power: google.visualization.arrayToDataTable([['Label', 'Value'],['Power', 0]])
@@ -281,8 +309,8 @@ function drawChart() {
   }
 
   var misc_html_element = {
-    // discharge: new google.visualization.Gauge(document.getElementById('motor_today_discharge')),
-    // energy: new google.visualization.Gauge(document.getElementById('panel_energy')),
+    discharge: new google.visualization.Gauge(document.getElementById('tdis')),
+    energy: new google.visualization.Gauge(document.getElementById('tenergy')),
     volt: new google.visualization.Gauge(document.getElementById('panel_volt')),
     current: new google.visualization.Gauge(document.getElementById('panel_current')),
     power: new google.visualization.Gauge(document.getElementById('panel_power'))
@@ -291,6 +319,9 @@ function drawChart() {
   misc_html_element.volt.draw(misc_chart.volt, misc_options.volt);
   misc_html_element.current.draw(misc_chart.current, misc_options.current);
   misc_html_element.power.draw(misc_chart.power, misc_options.power);
+  misc_html_element.discharge.draw(misc_chart.discharge, misc_options.discharge);
+  misc_html_element.energy.draw(misc_chart.energy, misc_options.energy);
+
   socket.on('news', function (data) {
     console.log(data);
     document.getElementById('rmuno').innerText = data['rmuno'];
@@ -307,6 +338,8 @@ function drawChart() {
     misc_chart.volt.setValue(0, 1, data['pvol']);
     misc_chart.current.setValue(0, 1, data['pcurr']);
     misc_chart.power.setValue(0, 1, data['ppow']);
+    misc_chart.discharge.setValue(0, 1, data['tdis']);
+    misc_chart.energy.setValue(0, 1, data['tenergy']);
 
     motor_html_element.volt.draw(motor_chart.volt, motor_options.volt);
     motor_html_element.current.draw(motor_chart.current, motor_options.current);
@@ -317,6 +350,8 @@ function drawChart() {
     misc_html_element.volt.draw(misc_chart.volt, misc_options.volt);
     misc_html_element.current.draw(misc_chart.current, misc_options.current);
     misc_html_element.power.draw(misc_chart.power, misc_options.power);
+    misc_html_element.discharge.draw(misc_chart.discharge, misc_options.discharge);
+    misc_html_element.energy.draw(misc_chart.energy, misc_options.energy);
 
     document.getElementById('up').innerText = data['up'];
     document.getElementById('off').innerText = data['off'];
@@ -324,6 +359,8 @@ function drawChart() {
     document.getElementById('lat').innerText = data['lat'];
     document.getElementById('lon').innerText = data['lng'];
     document.getElementById('sim').innerText = data['imei'];
+    document.getElementById('totdis').innerText = data['totdis'];
+    document.getElementById('totenergy').innerText = data['totenergy'];
     if(data['fault'] == "0"){
       $('.dot').css("background-color", "green");
     }

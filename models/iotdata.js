@@ -35,6 +35,18 @@ const IotSchema = mongoose.Schema({
   mrpm: {
     type: String
   },
+  tdis: {
+    type: String
+  },
+  totdis: {
+    type: String
+  },
+  tenergy: {
+    type: String
+  },
+  totenergy: {
+    type: String
+  },
   up: {
     type: String
   },
@@ -71,7 +83,7 @@ const IotSchema = mongoose.Schema({
 });
 
 
-const Iotdata = module.exports = mongoose.model('Iotdata', IotSchema);
+const Iotdata = module.exports = mongoose.model('Sensordata', IotSchema);
 
 // to Register the user
 module.exports.insertData = function (data, callback) {

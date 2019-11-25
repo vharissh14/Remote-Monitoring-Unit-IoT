@@ -43,6 +43,10 @@ router.post('/downloadData', isAuthenticated, (req, res) => {
             let mpow = result[i]['mpow'];
             let mfreq = result[i]['mfreq'];
             let mrpm = result[i]['mrpm'];
+            let tdis = result[i]['tdis'];
+            let totdis = result[i]['totdis'];
+            let tenergy = result[i]['tenergy'];
+            let totenergy = result[i]['totenergy'];
             let up = result[i]['up'];
             let off = result[i]['off'];
             let status = result[i]['status'];
@@ -55,7 +59,8 @@ router.post('/downloadData', isAuthenticated, (req, res) => {
             let fault = result[i]['fault'];
             let findata = [   rmuno, modemno, modemip, tele,
               readdate, rtcdate, mvol, mcur, mpow,
-              mfreq, mrpm, up, off, status, lat, lng,
+              mfreq, mrpm, tdis, totdis, tenergy, totenergy,
+              up, off, status, lat, lng,
               pvol, pcurr, ppow, imei, fault
             ];
             arrayResult.push(findata);
