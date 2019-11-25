@@ -323,49 +323,50 @@ function drawChart() {
   misc_html_element.energy.draw(misc_chart.energy, misc_options.energy);
 
   socket.on('news', function (data) {
-    console.log(data);
-    document.getElementById('rmuno').innerText = data['rmuno'];
-    document.getElementById('modemno').innerText = data['modemno'];
-    document.getElementById('modemip').innerText = data['modemip'];
-    document.getElementById('tele').innerText = data['tele'];
-    document.getElementById('readdate').innerText = data['readdate'];
-    document.getElementById('rtcdate').innerText = data['rtcdate'];
-    motor_chart.volt.setValue(0, 1, data['mvol']);
-    motor_chart.current.setValue(0, 1, data['mcur']);
-    motor_chart.power.setValue(0, 1, data['mpow']);
-    motor_chart.freq.setValue(0, 1, data['mfreq']);
-    motor_chart.rpm.setValue(0, 1, data['mrpm']);
-    misc_chart.volt.setValue(0, 1, data['pvol']);
-    misc_chart.current.setValue(0, 1, data['pcurr']);
-    misc_chart.power.setValue(0, 1, data['ppow']);
-    misc_chart.discharge.setValue(0, 1, data['tdis']);
-    misc_chart.energy.setValue(0, 1, data['tenergy']);
+    if(data) {
+        document.getElementById('rmuno').innerText = data['rmuno'];
+        document.getElementById('modemno').innerText = data['modemno'];
+        document.getElementById('modemip').innerText = data['modemip'];
+        document.getElementById('tele').innerText = data['tele'];
+        document.getElementById('readdate').innerText = data['readdate'];
+        document.getElementById('rtcdate').innerText = data['rtcdate'];
+        motor_chart.volt.setValue(0, 1, data['mvol']);
+        motor_chart.current.setValue(0, 1, data['mcur']);
+        motor_chart.power.setValue(0, 1, data['mpow']);
+        motor_chart.freq.setValue(0, 1, data['mfreq']);
+        motor_chart.rpm.setValue(0, 1, data['mrpm']);
+        misc_chart.volt.setValue(0, 1, data['pvol']);
+        misc_chart.current.setValue(0, 1, data['pcurr']);
+        misc_chart.power.setValue(0, 1, data['ppow']);
+        misc_chart.discharge.setValue(0, 1, data['tdis']);
+        misc_chart.energy.setValue(0, 1, data['tenergy']);
 
-    motor_html_element.volt.draw(motor_chart.volt, motor_options.volt);
-    motor_html_element.current.draw(motor_chart.current, motor_options.current);
-    motor_html_element.power.draw(motor_chart.power, motor_options.power);
-    motor_html_element.freq.draw(motor_chart.freq, motor_options.freq);
-    motor_html_element.rpm.draw(motor_chart.rpm, motor_options.rpm);
+        motor_html_element.volt.draw(motor_chart.volt, motor_options.volt);
+        motor_html_element.current.draw(motor_chart.current, motor_options.current);
+        motor_html_element.power.draw(motor_chart.power, motor_options.power);
+        motor_html_element.freq.draw(motor_chart.freq, motor_options.freq);
+        motor_html_element.rpm.draw(motor_chart.rpm, motor_options.rpm);
 
-    misc_html_element.volt.draw(misc_chart.volt, misc_options.volt);
-    misc_html_element.current.draw(misc_chart.current, misc_options.current);
-    misc_html_element.power.draw(misc_chart.power, misc_options.power);
-    misc_html_element.discharge.draw(misc_chart.discharge, misc_options.discharge);
-    misc_html_element.energy.draw(misc_chart.energy, misc_options.energy);
+        misc_html_element.volt.draw(misc_chart.volt, misc_options.volt);
+        misc_html_element.current.draw(misc_chart.current, misc_options.current);
+        misc_html_element.power.draw(misc_chart.power, misc_options.power);
+        misc_html_element.discharge.draw(misc_chart.discharge, misc_options.discharge);
+        misc_html_element.energy.draw(misc_chart.energy, misc_options.energy);
 
-    document.getElementById('up').innerText = data['up'];
-    document.getElementById('off').innerText = data['off'];
-    document.getElementById('status').innerText = data['status'];
-    document.getElementById('lat').innerText = data['lat'];
-    document.getElementById('lon').innerText = data['lng'];
-    document.getElementById('sim').innerText = data['imei'];
-    document.getElementById('totdis').innerText = data['totdis'];
-    document.getElementById('totenergy').innerText = data['totenergy'];
-    if(data['fault'] == "0"){
-      $('.dot').css("background-color", "green");
-    }
-    else{
-      $('.dot').css("background-color", "red");
+        document.getElementById('up').innerText = data['up'];
+        document.getElementById('off').innerText = data['off'];
+        document.getElementById('status').innerText = data['status'];
+        document.getElementById('lat').innerText = data['lat'];
+        document.getElementById('lon').innerText = data['lng'];
+        document.getElementById('sim').innerText = data['imei'];
+        document.getElementById('totdis').innerText = data['totdis'];
+        document.getElementById('totenergy').innerText = data['totenergy'];
+        if(data['fault'] == "0"){
+          $('.dot').css("background-color", "green");
+        }
+        else{
+          $('.dot').css("background-color", "red");
+        }
     }
   });
 }
