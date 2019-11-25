@@ -93,7 +93,9 @@ io.on('connection', function (socket) {
 
     if(data['type']!='tcp') {
         Iotdata.getLastData(data.data, function(err, result){
-          io.to(socket.room).emit('news', result[0]);
+          if(result[0]['status'].toLowerCase()=='on'){
+              io.to(socket.room).emit('news', result[0]);
+          }
         })
     }
 
@@ -105,39 +107,39 @@ io.on('connection', function (socket) {
     io.to(socket.room).emit('pwron1', {data: 'on'});
   });
   socket.on('pwroff', function(data){
-    let rmuno = 'N/A';
-    let modemno = 'N/A';
-    let modemip = 'N/A';
-    let tele = 'N/A';
-    let readdate = 'N/A';
-    let rtcdate = 'N/A';
-    let mvol = 0;
-    let mcur = 0;
-    let mpow = 0;
-    let mfreq = 0;
-    let mrpm = 0;
-    let tdis = 0;
-    let totdis = 'N/A';
-    let tenergy = 0;
-    let totenergy = 'N/A';
-    let up = 'N/A';
-    let off = 'N/A';
-    let status = 'N/A';
-    let lat = 'N/A';
-    let lng = 'N/A';
-    let pvol = 0;
-    let pcurr = 0;
-    let ppow = 0;
-    let imei = 'N/A';
-    let fault = 1;
-    io.to(socket.room).emit('news',
-    {
-      rmuno: rmuno, modemno: modemno, modemip: modemip, tele: tele,
-      readdate: readdate, rtcdate: rtcdate, mvol: mvol, mcur: mcur, mpow: mpow,
-      mfreq: mfreq, mrpm: mrpm, tdis: tdis, totdis: totdis, tenergy: tenergy, totenergy: totenergy,
-      up: up, off: off, status: status, lat: lat, lng: lng,
-      pvol: pvol, pcurr: pcurr, ppow: ppow, imei: imei, fault: fault
-    });
+    // let rmuno = 'N/A';
+    // let modemno = 'N/A';
+    // let modemip = 'N/A';
+    // let tele = 'N/A';
+    // let readdate = 'N/A';
+    // let rtcdate = 'N/A';
+    // let mvol = 0;
+    // let mcur = 0;
+    // let mpow = 0;
+    // let mfreq = 0;
+    // let mrpm = 0;
+    // let tdis = 0;
+    // let totdis = 'N/A';
+    // let tenergy = 0;
+    // let totenergy = 'N/A';
+    // let up = 'N/A';
+    // let off = 'N/A';
+    // let status = 'N/A';
+    // let lat = 'N/A';
+    // let lng = 'N/A';
+    // let pvol = 0;
+    // let pcurr = 0;
+    // let ppow = 0;
+    // let imei = 'N/A';
+    // let fault = 1;
+    // io.to(socket.room).emit('news',
+    // {
+    //   rmuno: rmuno, modemno: modemno, modemip: modemip, tele: tele,
+    //   readdate: readdate, rtcdate: rtcdate, mvol: mvol, mcur: mcur, mpow: mpow,
+    //   mfreq: mfreq, mrpm: mrpm, tdis: tdis, totdis: totdis, tenergy: tenergy, totenergy: totenergy,
+    //   up: up, off: off, status: status, lat: lat, lng: lng,
+    //   pvol: pvol, pcurr: pcurr, ppow: ppow, imei: imei, fault: fault
+    // });
     io.to(socket.room).emit('pwroff1', {data: 'off'});
   });
   socket.on('motrev', function(data){
