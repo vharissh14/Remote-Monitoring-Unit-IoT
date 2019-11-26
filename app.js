@@ -101,6 +101,7 @@ io.on('connection', function (socket) {
 
   })
   socket.on('myevent', function(data) {
+      console.log(data);
     io.to(socket.room).emit('news', data);
   });
   socket.on('pwron', function(data){

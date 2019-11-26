@@ -323,6 +323,7 @@ function drawChart() {
     misc_html_element.energy.draw(misc_chart.energy, misc_options.energy);
 
     socket.on('news', function (data) {
+        console.log(data);
         if(data) {
             document.getElementById('rmuno').innerText = data['rmuno'];
             document.getElementById('modemno').innerText = data['modemno'];
