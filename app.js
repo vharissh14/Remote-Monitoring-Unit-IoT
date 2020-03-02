@@ -45,6 +45,7 @@ app.use(session({
   secret: 'keyboard cat',
   store: new MongoStore({
     url: 'mongodb://172.31.29.170/test-app',
+    // url: 'mongodb://localhost/test-app',
     touchAfter: 24 * 3600 // time period in seconds
   }),
   saveUninitialized: true,
@@ -88,21 +89,21 @@ server.listen(9000, ()=>{
 
 io.on('connection', function (socket) {
   socket.on('subscribe', function(data){
+    console.log(data)
     socket.room = data.data;
     socket.join(data.data);
 
-    if(data['type']!='tcp') {
-        Iotdata.getLastData(data.data, function(err, result){
-          if(result[0]['status'].toLowerCase()=='on'){
-              io.to(socket.room).emit('news', result[0]);
-          }
-        })
-    }
+    // if(data['type']!='tcp') {
+    //   Iotdata.getLastData(data.data, function(err, result){
+    //     if(result[0]['status'].toLowerCase()=='on'){
+    //       io.to(socket.room).emit('news', result[0]);
+    //     }
+    //   })
+    // }
 
   })
   socket.on('myevent', function(data) {
-      console.log(data);
-    io.to(socket.room).emit('news', data);
+    io.to(data.deviceId).emit('news', data);
   });
   socket.on('pwron', function(data){
     io.to(socket.room).emit('pwron1', {data: 'on'});
@@ -152,46 +153,31 @@ function onClientConnected(sock) {
   var socketclient = ioclient.connect('http://localhost:5000');
   sock.setEncoding("utf8");
   sock.on('data', function(data) {
+    console.log(data);
     let iotdata = data.split('#');
     if(iotdata.length > 2) {
-      let rmuno = iotdata[0];
-      let modemno = iotdata[1];
-      let modemip = iotdata[2];
-      let tele = iotdata[3];
-      let readdate = iotdata[4];
-      let rtcdate = iotdata[5];
-      let mvol = iotdata[6];
-      let mcur = iotdata[7];
-      let mpow = iotdata[8];
-      let mfreq = iotdata[9];
-      let mrpm = iotdata[10];
-      let tdis = iotdata[11];
-      let totdis = iotdata[12];
-      let tenergy = iotdata[13];
-      let totenergy = iotdata[14];
-      let up = iotdata[15];
-      let off = iotdata[16];
-      let status = iotdata[17];
-      let lat = iotdata[18];
-      let lng = iotdata[19];
-      let pvol = iotdata[20];
-      let pcurr = iotdata[21];
-      let ppow = iotdata[22];
-      let imei = iotdata[23];
-      let fault = iotdata[24];
-      let findata = {   rmuno: rmuno, modemno: modemno, modemip: modemip, tele: tele,
-        readdate: readdate, rtcdate: rtcdate, mvol: mvol, mcur: mcur, mpow: mpow,
-        mfreq: mfreq, mrpm: mrpm, tdis: tdis, totdis: totdis, tenergy: tenergy, totenergy: totenergy,
-        up: up, off: off, status: status, lat: lat, lng: lng,
-        pvol: pvol, pcurr: pcurr, ppow: ppow, imei: imei, fault: fault, timestamp: Date.now()
+      let deviceId = iotdata[0];
+      let imei = iotdata[1];
+      let resistance = iotdata[2];
+      let simNo = iotdata[3];
+      let signalStrength = iotdata[4];
+      let timestamp = iotdata[5];
+
+      let findata = {
+        deviceId: deviceId,
+        imei: imei,
+        resistance: resistance,
+        simNo: simNo,
+        signalStrength: signalStrength,
+        timestamp: timestamp
       };
       socketclient.emit('myevent',findata);
       // addRow(findata);
-      Iotdata.insertData(findata, (err, user) => {
-        if (err) {
-          console.log("Error insert");
-        }
-      });
+      // Iotdata.insertData(findata, (err, user) => {
+      //   if (err) {
+      //     console.log("Error insert");
+      //   }
+      // });
     }
     else{
       let filterdata = data.split('\n')[0];
