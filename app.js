@@ -45,7 +45,7 @@ app.use(session({
   secret: 'keyboard cat',
   store: new MongoStore({
     url: 'mongodb://172.31.29.170/test-app',
-    // url: 'mongodb://localhost/test-app',
+    // url: 'mongodb://localhost/session',
     touchAfter: 24 * 3600 // time period in seconds
   }),
   saveUninitialized: true,
